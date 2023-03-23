@@ -1,9 +1,8 @@
-import { isFriendList, isFriendType } from '../api/friend-type'
-import { isGroupList, isGroupType } from '../api/group-type'
+import { isFriendList } from '../api/friend-type'
+import { isGroupList } from '../api/group-type'
 import { isGroup, isPrivate } from '../api/received-msg-types'
-import { selfId } from '../self_id'
 import { pushGroupConversation, pushPrivateConversation } from '../stores/conv'
-import { friendConvStore, recentConv, sendEl, setFriendList, setGroupList, setRecentCov, setSendEl } from '../stores/lists'
+import { sendEl, setFriendList, setGroupList } from '../stores/lists'
 import { addFriendStore, addGroupStore } from '../stores/store'
 import { createWs } from './ws'
 
@@ -21,7 +20,7 @@ ws.listen((data: any) => {
     return
   }
   if (data.message === '' && data.retcode === 0 && data.status === 'ok') {
-    if (Object.keys(data.data).length === 1) {
+    if (Object.keys(data.data).length === 1 && typeof data.data.message_id === 'number') {
       sendEl()!.value = ''
       return
     }

@@ -1,9 +1,10 @@
 import clsx from 'clsx'
 import type { Component } from 'solid-js'
-import { For } from 'solid-js'
-import { transformImg, transformReceived } from '~/utils/msg/received-msg-transformer'
+import { For, Show } from 'solid-js'
+import { transformReceived } from '~/utils/msg/received-msg-transformer'
 import type { GroupConversation } from '~/utils/stores/lists'
 import { sendEl } from '~/utils/stores/lists'
+import { ws } from '~/utils/ws/instance'
 
 import './scroller.css'
 
@@ -31,8 +32,15 @@ const GroupConv: Component<{
                     // eslint-disable-next-line prefer-template
                     sendEl()!.value = '[CQ:reply,id=' + item.message_id + ']' + sendEl()!.value
                   }}
-                >
-                </div>
+                />
+                <Show when={item.self_id === item.sender.user_id}>
+                  <div
+                    class={clsx('i-teenyicons-bin-outline', 'cursor-pointer', 'hover:text-red')}
+                    onClick={() => {
+                      ws.send('delete_msg', { message_id: item.message_id })
+                    }}
+                  />
+                </Show>
               </div>
               <div innerHTML={transformReceived(item.message)} />
             </div>

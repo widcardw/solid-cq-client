@@ -1,13 +1,12 @@
-// import WebSocket from 'isomorphic-ws'
 import type { SentFileMessage, SentMessage } from '../api/sent-message-type'
-import type { GetMsgParams, GroupFileSentParams, GroupMsgSentParams, PrivateFileSentParams, PrivateMsgSentParams, WsSentParams } from '../api/ws-sent-params'
+import type { DeleteMsgParams, GetMsgParams, GroupFileSentParams, GroupMsgSentParams, PrivateFileSentParams, PrivateMsgSentParams, WsSentParams } from '../api/ws-sent-params'
 
 enum MessageTarget {
   Private = 'p',
   Group = 'g',
 }
 
-type SendActions = 'send_private_msg' | 'send_group_msg' | 'upload_private_file' | 'upload_group_file' | 'get_msg'
+type SendActions = 'send_private_msg' | 'send_group_msg' | 'upload_private_file' | 'upload_group_file' | 'get_msg' | 'delete_msg'
 
 class CqWs {
   ws: WebSocket
@@ -36,6 +35,7 @@ class CqWs {
   send(action: 'upload_private_file', params: PrivateFileSentParams): void
   send(action: 'upload_group_file', params: GroupFileSentParams): void
   send(action: 'get_msg', params: GetMsgParams): void
+  send(action: 'delete_msg', params: DeleteMsgParams): void
   send(action: SendActions, params: WsSentParams) {
     this.ws.send(JSON.stringify({ action, params }))
   }

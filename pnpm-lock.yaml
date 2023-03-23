@@ -3,18 +3,15 @@ lockfileVersion: 5.4
 specifiers:
   '@iconify-json/teenyicons': ^1.1.5
   '@types/node': ^18.15.5
-  '@types/ws': ^8.5.4
   '@widcardw/eslint-config': ^0.3.1
   clsx: ^1.2.1
   eslint: ^8.36.0
-  isomorphic-ws: ^5.0.0
   solid-js: ^1.6.10
   solidjs-use: ^1.2.0
   typescript: ^4.9.5
   unocss: ^0.50.6
   vite: ^4.1.1
   vite-plugin-solid: ^2.5.0
-  ws: ^8.13.0
 
 dependencies:
   solid-js: 1.6.10
@@ -22,17 +19,14 @@ dependencies:
 devDependencies:
   '@iconify-json/teenyicons': 1.1.5
   '@types/node': 18.15.5
-  '@types/ws': 8.5.4
   '@widcardw/eslint-config': 0.3.1_vgl77cfdswitgr47lm5swmv43m
   clsx: 1.2.1
   eslint: 8.36.0
-  isomorphic-ws: 5.0.0_ws@8.13.0
   solidjs-use: 1.2.0
   typescript: 4.9.5
   unocss: 0.50.6_vite@4.1.1
   vite: 4.1.1_@types+node@18.15.5
   vite-plugin-solid: 2.5.0_solid-js@1.6.10+vite@4.1.1
-  ws: 8.13.0
 
 packages:
 
@@ -813,12 +807,6 @@ packages:
 
   /@types/web-bluetooth/0.0.16:
     resolution: {integrity: sha512-oh8q2Zc32S6gd/j50GowEjKLoOVOwHP/bWVjKJInBwQqdOYMdPrf1oVlelTlyfFK3CKxL1uahMDAr+vy8T7yMQ==}
-    dev: true
-
-  /@types/ws/8.5.4:
-    resolution: {integrity: sha512-zdQDHKUgcX/zBc4GrwsE/7dVdAD8JR4EuiAXiiUhhfyIJXXb2+PrGshFyeXWQPMmmZ2XxgaqclgpIC7eTXc1mg==}
-    dependencies:
-      '@types/node': 18.15.5
     dev: true
 
   /@typescript-eslint/eslint-plugin/5.56.0_iskin7c6dxqunwflhstekcjqmq:
@@ -2678,14 +2666,6 @@ packages:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
     dev: true
 
-  /isomorphic-ws/5.0.0_ws@8.13.0:
-    resolution: {integrity: sha512-muId7Zzn9ywDsyXgTIafTry2sV3nySZeUDe6YedVd1Hvuuep5AsIlqK+XefWpYTyJG5e503F2xIuT2lcU6rCSw==}
-    peerDependencies:
-      ws: '*'
-    dependencies:
-      ws: 8.13.0
-    dev: true
-
   /jiti/1.18.2:
     resolution: {integrity: sha512-QAdOptna2NYiSSpv0O/BwoHBSmz4YhpzJHyi+fnMRTXFjp7B8i/YG5Z8IfusxB1ufjcD2Sre1F3R+nX3fvy7gg==}
     hasBin: true
@@ -3868,19 +3848,6 @@ packages:
 
   /wrappy/1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
-    dev: true
-
-  /ws/8.13.0:
-    resolution: {integrity: sha512-x9vcZYTrFPC7aSIbj7sRCYo7L/Xb8Iy+pW0ng0wt2vCJv7M9HOMy0UoN3rr+IFC7hb7vXoqS+P9ktyLLLhO+LA==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: '>=5.0.2'
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
     dev: true
 
   /y18n/5.0.8:

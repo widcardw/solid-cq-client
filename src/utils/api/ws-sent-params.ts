@@ -29,11 +29,16 @@ interface GetMsgParams extends MsgParams {
   message_id: number
 }
 
+interface DeleteMsgParams extends MsgParams {
+  message_id: number
+}
+
 type WsSentParams = PrivateMsgSentParams
 | PrivateFileSentParams
 | GroupFileSentParams
 | GroupMsgSentParams
 | GetMsgParams
+| DeleteMsgParams
 
 export type {
   PrivateMsgSentParams,
@@ -41,5 +46,6 @@ export type {
   PrivateFileSentParams,
   GroupFileSentParams,
   GetMsgParams,
+  DeleteMsgParams,
   WsSentParams,
 }

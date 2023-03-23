@@ -7,11 +7,15 @@ const xssMap = {
   '\t': '&emsp;',
 }
 
-type XSSString = keyof typeof xssMap
+function transformSymbol(str: string) {
+  return str.replace(/&#(\d+?);/g, (_s, $1) => {
+    return String.fromCharCode(parseInt($1))
+  })
+}
 
 function filterXss(str: string) {
   str = str.replace(/[&"<>\t ]/g, (s) => {
-    return xssMap[s as XSSString]
+    return xssMap[s as keyof typeof xssMap]
   })
   str = str.replace(/\r\n/g, '<br>').replace(/\r/g, '<br>').replace(/\n/g, '<br>')
   return str
@@ -37,6 +41,7 @@ function transformReply(msg: string) {
 
 function transformReceived(msg: string) {
   return [
+    transformSymbol,
     filterXss,
     transformReply,
     transformAt,
