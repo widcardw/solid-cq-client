@@ -64,7 +64,11 @@ const Conversation: Component<{
           </Match>
         </Switch>
       </div>
-      <div class={clsx(['flex', 'border border-t-solid border-t-zinc', 'flex-1'])}>
+      <div class={clsx(['flex flex-col', 'border border-t-solid border-t-zinc', 'flex-1'])}>
+        <div class={clsx('flex', 'items-center', 'border border-b-(solid zinc/30)')}>
+          <div class={clsx('i-teenyicons-image-alt-outline', 'm-2', 'cursor-pointer', 'hover:text-blue')} />
+          <div class={clsx('i-teenyicons-text-document-outline', 'm-2', 'cursor-pointer', 'hover:text-blue')} />
+        </div>
         <textarea
           ref={setSendEl}
           class={clsx([
@@ -75,7 +79,7 @@ const Conversation: Component<{
             'resize-none',
             'leading-loose',
           ])}
-          onKeyDown={(e) => {
+          onKeyDown={async (e) => {
             if (!curConv())
               return
             if (!curConv()?.id)
@@ -84,9 +88,9 @@ const Conversation: Component<{
               return
 
             if (curConv()?.type === MessageTarget.Private)
-              ws.m(MessageTarget.Private, curConv()!.id, buildMsg((e.target as HTMLTextAreaElement).value))
+              ws.m(MessageTarget.Private, curConv()!.id, await buildMsg((e.target as HTMLTextAreaElement).value))
             else
-              ws.m(MessageTarget.Group, curConv()!.id, buildMsg((e.target as HTMLTextAreaElement).value))
+              ws.m(MessageTarget.Group, curConv()!.id, await buildMsg((e.target as HTMLTextAreaElement).value))
           }}
         >
         </textarea>

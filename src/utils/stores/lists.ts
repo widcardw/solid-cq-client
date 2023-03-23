@@ -29,6 +29,7 @@ const [groupConvStore, setGroupConvStore] = createStore<GroupConversation[]>([])
 const [friendConvStore, setFriendConvStore] = createStore<FriendConversation[]>([])
 const [curConv, setCurConv] = createSignal<Conversation | undefined>()
 const [sendEl, setSendEl] = createSignal<HTMLTextAreaElement>()
+const [inited, setInited] = createSignal(false)
 
 export {
   friendList, setFriendList,
@@ -38,6 +39,7 @@ export {
   friendConvStore, setFriendConvStore,
   curConv, setCurConv,
   sendEl, setSendEl,
+  inited, setInited,
 }
 
 export type {

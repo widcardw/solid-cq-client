@@ -1,9 +1,12 @@
 import type { SentMessage } from '~/utils/api/sent-message-type'
 import { createReplyMessage, createTextMessage } from '~/utils/api/sent-message-type'
+import { transformTex } from '~/utils/msg/transform-tex'
 
 const ReplyPattern = /\[CQ:reply,id=([^\]]+)\]/
 
-function buildMsg(msg: string) {
+async function buildMsg(msg: string) {
+  if (msg.startsWith('/tex') || msg.startsWith('/am'))
+    return await transformTex(msg)
   return transformReply(msg)
 }
 

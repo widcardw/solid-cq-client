@@ -1,3 +1,5 @@
+import { transformTex } from './transform-tex'
+
 const xssMap = {
   '&': '&amp;',
   '"': '&quot;',
@@ -39,6 +41,14 @@ function transformReply(msg: string) {
   })
 }
 
+function transformJson(msg: string) {
+  const match = msg.match(/^\[CQ:json,data=(.*)\]$/)
+  if (match)
+    return `<details><summary>JSON 卡片</summary>${match[1]}</details>`
+
+  return msg
+}
+
 function transformReceived(msg: string) {
   return [
     transformSymbol,
@@ -46,6 +56,7 @@ function transformReceived(msg: string) {
     transformReply,
     transformAt,
     transformImg,
+    transformJson,
   ].reduce((acc, fn) => fn(acc), msg)
 }
 
