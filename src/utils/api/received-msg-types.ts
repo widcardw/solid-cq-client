@@ -17,6 +17,7 @@ interface ReceivedPrivateMessage {
     age: number
   }
   temp_source: number
+  deleted?: boolean
 }
 
 interface ReceivedGroupMessage {
@@ -47,6 +48,27 @@ interface ReceivedGroupMessage {
     name: string
     flag: string
   }
+  deleted?: boolean
+}
+
+interface ReceivedFriendRecall {
+  message_id: number
+  notice_type: 'friend_recall'
+  post_type: 'notice'
+  self_id: number
+  time: number
+  user_id: number
+}
+
+interface ReceivedGroupRecall {
+  message_id: number
+  notice_type: 'group_recall'
+  post_type: 'notice'
+  self_id: number
+  time: number
+  user_id: number
+  group_id: number
+  operator_id: number
 }
 
 function isPrivate(obj: any): obj is ReceivedPrivateMessage {
@@ -60,6 +82,8 @@ function isGroup(obj: any): obj is ReceivedGroupMessage {
 export type {
   ReceivedPrivateMessage,
   ReceivedGroupMessage,
+  ReceivedFriendRecall,
+  ReceivedGroupRecall,
 }
 
 export {

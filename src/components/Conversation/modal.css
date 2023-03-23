@@ -1,0 +1,9 @@
+.modal-layout {
+    z-index: 999;
+    border-radius: 0.5rem;
+    padding: 1rem 2rem;
+    backdrop-filter: blur(8px);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}
