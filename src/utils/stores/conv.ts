@@ -1,0 +1,59 @@
+import { isFriendType } from '../api/friend-type'
+import { isGroupType } from '../api/group-type'
+import { isGroup, isPrivate } from '../api/received-msg-types'
+import { recentConv, setRecentCov } from './lists'
+
+function pushGroupConversation(data: any) {
+  if (isGroup(data) || isGroupType(data)) {
+    const idx = recentConv().findIndex((i) => {
+      return (
+        isGroupType(i)
+        && data.group_id === i.group_id)
+    })
+    if (idx !== -1) {
+      setRecentCov(prev => [
+        prev[idx],
+        ...prev.slice(0, idx),
+        ...prev.slice(idx + 1),
+      ])
+    }
+    else {
+      setRecentCov(prev => [
+        { group_id: data.group_id, group_name: isGroupType(data) ? data.group_name : `群 ${data.group_id}` },
+        ...prev])
+    }
+  }
+}
+
+function pushPrivateConversation(data: any) {
+  if (isPrivate(data) || isFriendType(data)) {
+    const idx = recentConv().findIndex((i) => {
+      return (
+        isFriendType(i)
+        && data.user_id === i.user_id)
+    })
+    if (idx !== -1) {
+      setRecentCov(prev => [
+        prev[idx],
+        ...prev.slice(0, idx),
+        ...prev.slice(idx + 1),
+      ])
+    }
+
+    else {
+      setRecentCov(prev => [
+        {
+          user_id: data.user_id,
+          nickname: isFriendType(data) ? data.nickname : data.sender.nickname,
+          remark: isFriendType(data) ? (data.remark || data.nickname) : data.sender.nickname,
+        },
+        ...prev,
+      ])
+    }
+  }
+}
+
+export {
+  pushGroupConversation,
+  pushPrivateConversation,
+}
