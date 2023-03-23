@@ -1,3 +1,22 @@
+const xssMap = {
+  '&': '&amp;',
+  '"': '&quot;',
+  '<': '&lt;',
+  '>': '&gt;',
+  ' ': '&nbsp;',
+  '\t': '&emsp;',
+}
+
+type XSSString = keyof typeof xssMap
+
+function filterXss(str: string) {
+  str = str.replace(/[&"<>\t ]/g, (s) => {
+    return xssMap[s as XSSString]
+  })
+  str = str.replace(/\r\n/g, '<br>').replace(/\r/g, '<br>').replace(/\n/g, '<br>')
+  return str
+}
+
 function transformImg(msg: string) {
   return msg.replaceAll(/\[CQ:image,file=([^\]]+?),url=([^\]]+?)\]/g, (_match, _$1, $2) => {
     return `<img src=${$2} referrerPolicy="no-referrer" alt='图片' width='200px' />`
@@ -18,6 +37,7 @@ function transformReply(msg: string) {
 
 function transformReceived(msg: string) {
   return [
+    filterXss,
     transformReply,
     transformAt,
     transformImg,
