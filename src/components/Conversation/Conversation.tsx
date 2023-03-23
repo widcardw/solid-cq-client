@@ -64,7 +64,7 @@ const Conversation: Component<{
           </Match>
         </Switch>
       </div>
-      <div class={clsx(['flex', 'border border-t-solid border-t-gray', 'flex-1'])}>
+      <div class={clsx(['flex', 'border border-t-solid border-t-zinc', 'flex-1'])}>
         <textarea
           ref={setSendEl}
           class={clsx([

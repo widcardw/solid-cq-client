@@ -16,7 +16,20 @@ code, pre, input, textarea {
   font-family: 'IBM Plex Mono';
 }
 
+input, textarea {
+  background-color: transparent;
+}
+
 a {
   text-decoration: none;
   color: #007fff;
+}
+
+@media (prefers-color-scheme:dark) {
+  body, html, code, input, textarea {
+    color: whitesmoke;
+  }
+  body, html {
+    background-color: #222;
+  }
 }

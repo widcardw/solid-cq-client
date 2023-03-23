@@ -1,0 +1,8 @@
+.one-msg .icon {
+    opacity: 0;
+    transition: all 0.2s;
+}
+
+.one-msg:hover .icon {
+    opacity: 1;
+}
