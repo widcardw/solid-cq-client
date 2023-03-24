@@ -44,7 +44,7 @@ function transformReply(msg: string) {
 function transformJson(msg: string) {
   const match = msg.match(/^\[CQ:json,data=(.*)\]$/)
   if (match)
-    return `<details><summary>JSON 卡片</summary>${match[1]}</details>`
+    return `<details><summary>JSON 卡片</summary><div class="break-all">${match[1]}</div></details>`
 
   return msg
 }
