@@ -1,11 +1,11 @@
 import clsx from 'clsx'
 import type { Component } from 'solid-js'
 import { For, Match, Show, Switch, createSignal } from 'solid-js'
-import { useFileDialog } from 'solidjs-use'
+import { onStartTyping, useFileDialog } from 'solidjs-use'
 import { FriendConv } from './FriendConv'
 import { GroupConv } from './GroupConv'
 import type { Conversation as ConversationInterface, FriendConversation, GroupConversation } from '~/utils/stores/lists'
-import { curConv, loading, setLoading, setSendEl } from '~/utils/stores/lists'
+import { curConv, loading, sendEl, setLoading, setSendEl } from '~/utils/stores/lists'
 import { ws } from '~/utils/ws/instance'
 import { MessageTarget } from '~/utils/ws/ws'
 import { buildMsg } from '~/cq/build-msg'
@@ -58,6 +58,9 @@ const Conversation: Component<{
 }> = (props) => {
   const [showFile, setShowFile] = createSignal(false)
   const { files, open: openFileDlg, reset } = useFileDialog()
+  onStartTyping(() => {
+    sendEl()?.focus()
+  })
   return (
     <div class={clsx([props.cls, 'flex flex-col', 'h-100vh'])}>
       <div class={clsx(['flex flex-col', 'max-h-70vh', 'min-h-30vh'])}>
@@ -112,7 +115,7 @@ const Conversation: Component<{
               {([, f]) => <span class='mr-2'>{f.name}</span>}
             </For>
             <span
-              class={clsx('text-blue', 'underline', 'cursor-pointer')}
+              class={clsx('text-blue', 'underline', 'cursor-pointer', 'mr-2')}
               onClick={async () => {
                 if (!curConv())
                   return
@@ -129,6 +132,11 @@ const Conversation: Component<{
                 reset()
               }}
             >Upload
+            </span>
+            <span
+              class={clsx('text-red', 'underline', 'cursor-pointer')}
+              onClick={reset}
+            >Cancel
             </span>
           </div>
         </Show>
