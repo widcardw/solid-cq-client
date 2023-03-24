@@ -25,8 +25,10 @@ const FriendConvMessage: Component<{
           class={clsx('i-teenyicons-attach-outline', 'cursor-pointer', 'hover:text-blue', 'icon')}
           onClick={() => {
             // template string concatenate may conflict with unocss
+            const el = sendEl()
+            if (el)
             // eslint-disable-next-line prefer-template
-            sendEl()!.value = '[CQ:reply,id=' + props.item.message_id + ']' + sendEl()!.value
+              el.value = '[CQ:reply,id=' + props.item.message_id + ']' + el.value
           }}
         />
         <Show when={props.item.self_id === props.item.sender.user_id && !props.item.deleted}>

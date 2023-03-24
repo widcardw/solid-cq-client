@@ -133,7 +133,7 @@ const Conversation: Component<{
           </div>
         </Show>
         <textarea
-          ref={setSendEl()}
+          ref={r => setSendEl(r)}
           placeholder='Ctrl + Enter 发送文本'
           class={clsx([
             'border-none',
