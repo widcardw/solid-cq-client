@@ -22,6 +22,8 @@ const ContactList: Component<{
   return (
     <div class={clsx([props.cls, 'flex flex-col', 'h-100vh'])}>
       <input
+        type='search'
+        placeholder='搜索'
         class={clsx([
           'outline-none',
           'border-none border border-b-solid border-b-zinc/20',

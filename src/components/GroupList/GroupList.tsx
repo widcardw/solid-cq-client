@@ -20,6 +20,7 @@ const GroupList: Component<{
   return (
     <div class={clsx([props.cls, 'flex flex-col', 'h-100vh'])}>
       <input
+        placeholder='搜索'
         type='search'
         class={clsx([
           'outline-none',

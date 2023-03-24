@@ -40,8 +40,6 @@ class CqWs {
     this.ws.send(JSON.stringify({ action, params }))
   }
 
-  m(target: MessageTarget.Private, user_id: number, msg: SentMessage): void
-  m(target: MessageTarget.Group, user_id: number, msg: SentMessage): void
   m(target: MessageTarget, id: number, msg: SentMessage) {
     if (target === MessageTarget.Private) {
       const params: PrivateMsgSentParams = {
@@ -59,8 +57,6 @@ class CqWs {
     }
   }
 
-  f(target: MessageTarget.Private, user_id: number, file: SentFileMessage): void
-  f(target: MessageTarget.Group, group_id: number, file: SentFileMessage): void
   f(target: MessageTarget, id: number, file: SentFileMessage) {
     if (target === MessageTarget.Private) {
       const params: PrivateFileSentParams = {

@@ -17,7 +17,7 @@ const FriendConvMessage: Component<{
     <div class={clsx('m-2', 'one-msg')}>
       <div class="flex items-center space-x-2">
         <div class={clsx(
-          'text-name',
+          props.item.self_id === props.item.sender.user_id ? 'text-green-6' : 'text-blue-6',
         )}
         >{props.item.sender.nickname} {props.item.deleted && '[已撤回]'}
         </div>

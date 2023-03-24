@@ -76,7 +76,7 @@ function createFileMessage(url: string, name?: string): SentFileMessage {
     type: 'file',
     data: {
       file: url,
-      name: name || url.split('/').pop() || 'no_name',
+      name: name || url.split('/').pop()?.slice(0, 32) || 'no_name',
     },
   }
 }

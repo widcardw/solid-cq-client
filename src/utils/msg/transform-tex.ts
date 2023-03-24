@@ -61,6 +61,10 @@ async function svgToPng(svg: string) {
   })
   const buffer = resvg.render().asPng()
   const bytes = new Uint8Array(buffer)
+  return u8tobase64(bytes)
+}
+
+function u8tobase64(bytes: Uint8Array) {
   let data = ''
   const len = bytes.byteLength
   for (let i = 0; i < len; i++)
@@ -85,4 +89,5 @@ async function transformTex(msg: string) {
 export {
   transformTex,
   svgToPng,
+  u8tobase64,
 }

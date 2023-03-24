@@ -18,23 +18,23 @@ const LeftSidebar: Component<{
   return (
     <div class={clsx(props.cls, 'flex flex-col')}>
       <div
-        class={clsx(['i-teenyicons-message-text-alt-outline', 'cursor-pointer', 'm-4', props.state === ListState.Message && 'text-blue'])}
+        class={clsx(['text-1.5rem', 'i-teenyicons-message-text-alt-outline', 'cursor-pointer', 'm-3', props.state === ListState.Message && 'text-blue'])}
         title="最近消息"
         onClick={() => props.onListStateChange(ListState.Message)}
       />
       <div
-        class={clsx(['i-teenyicons-user-circle-outline', 'cursor-pointer', 'm-4', props.state === ListState.Contact && 'text-blue'])}
+        class={clsx(['text-1.5rem', 'i-teenyicons-user-circle-outline', 'cursor-pointer', 'm-3', props.state === ListState.Contact && 'text-blue'])}
         title="好友列表"
         onClick={() => props.onListStateChange(ListState.Contact)}
       />
       <div
-        class={clsx(['i-teenyicons-users-outline', 'cursor-pointer', 'm-4', props.state === ListState.Groups && 'text-blue'])}
+        class={clsx(['text-1.5rem', 'i-teenyicons-users-outline', 'cursor-pointer', 'm-3', props.state === ListState.Groups && 'text-blue'])}
         title="群列表"
         onClick={() => props.onListStateChange(ListState.Groups)}
       />
       <div class='flex-1' />
       <div
-        class={clsx('i-teenyicons-link-outline', 'm-4', 'cursor-pointer', ws() && 'text-blue')}
+        class={clsx('text-1.5rem', 'i-teenyicons-link-outline', 'm-3', 'cursor-pointer', ws() && 'text-blue')}
         title="连接"
         onClick={() => {
           if (!ws())
@@ -42,7 +42,7 @@ const LeftSidebar: Component<{
         }}
       />
       <div
-        class={clsx('i-teenyicons-link-remove-outline', 'm-4', 'cursor-pointer')}
+        class={clsx('text-1.5rem', 'i-teenyicons-link-remove-outline', 'm-3', 'cursor-pointer')}
         title="断开"
         onClick={() => {
           ws()?.close()
@@ -50,7 +50,7 @@ const LeftSidebar: Component<{
         }}
       />
       <div
-        class={clsx('i-teenyicons-cog-outline', 'm-4', 'cursor-pointer')}
+        class={clsx('text-1.5rem', 'i-teenyicons-cog-outline', 'm-3', 'cursor-pointer')}
         title="设置"
         onClick={reveal}
       />
