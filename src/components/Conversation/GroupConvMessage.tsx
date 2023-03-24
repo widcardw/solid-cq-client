@@ -57,7 +57,7 @@ const GroupConvMessage: Component<{
           </Show>
         </Show>
       </div>
-      <div innerHTML={transformReceived(props.item.message)} />
+      <div class={clsx('break-all')} innerHTML={transformReceived(props.item.message)} />
     </div>
   )
 }
