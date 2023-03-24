@@ -4,17 +4,14 @@ import { isGroupList } from '../api/group-type'
 import { isGroup, isPrivate } from '../api/received-msg-types'
 import { pushGroupConversation, pushPrivateConversation } from '../stores/conv'
 import { sendEl, setFriendList, setGroupList, setLoading } from '../stores/lists'
-import { wsUrl } from '../stores/persistant'
 import { addFriendStore, addGroupStore, recallFriendStore, recallGroupStore } from '../stores/store'
 import { createWs } from './ws'
 import type { CqWs } from './ws'
 
-// const ws = createWs(wsUrl())
-// let ws: CqWs | null = null
 const [ws, setWs] = createSignal<CqWs>()
 
-function initWs() {
-  setWs(createWs(wsUrl()))
+function initWs(url: string) {
+  setWs(createWs(url))
   ws()?.listen((data: any) => {
     if (data.post_type === 'meta_event' || data.post_type === 'request')
       return

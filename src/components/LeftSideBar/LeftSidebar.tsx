@@ -2,9 +2,9 @@ import type { Component } from 'solid-js'
 import { Show, createSignal } from 'solid-js'
 import clsx from 'clsx'
 import { Portal } from 'solid-js/web'
+import { useStorage } from 'solidjs-use'
 import { ListState } from '~/utils/list-state'
 import { useConfirm } from '~/utils/hook/useConfirm'
-import { setWsUrl, wsUrl } from '~/utils/stores/persistant'
 import { initWs, setWs, ws } from '~/utils/ws/instance'
 
 const LeftSidebar: Component<{
@@ -14,6 +14,7 @@ const LeftSidebar: Component<{
 }> = (props) => {
   const { isRevealed, reveal, unreveal } = useConfirm()
   const [el, setEl] = createSignal<HTMLInputElement>()
+  const [wsUrl, setWsUrl] = useStorage('ws-url', 'ws://0.0.0.0:5700')
   return (
     <div class={clsx(props.cls, 'flex flex-col')}>
       <div
@@ -37,7 +38,7 @@ const LeftSidebar: Component<{
         title="连接"
         onClick={() => {
           if (!ws())
-            initWs()
+            initWs(wsUrl())
         }}
       />
       <div
@@ -70,7 +71,7 @@ const LeftSidebar: Component<{
                 setWsUrl(el()!.value)
                 if (ws())
                   ws()?.close()
-                initWs()
+                initWs(wsUrl())
                 unreveal()
               }}
             >OK
