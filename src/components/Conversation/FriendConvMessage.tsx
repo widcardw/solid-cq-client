@@ -16,7 +16,11 @@ const FriendConvMessage: Component<{
   return (
     <div class={clsx('m-2', 'one-msg')}>
       <div class="flex items-center space-x-2">
-        <div>{props.item.sender.nickname} {props.item.deleted && '[已撤回]'}</div>
+        <div class={clsx(
+          'text-name',
+        )}
+        >{props.item.sender.nickname} {props.item.deleted && '[已撤回]'}
+        </div>
         <div
           class={clsx('i-teenyicons-attach-outline', 'cursor-pointer', 'hover:text-blue', 'icon')}
           onClick={() => {
@@ -34,11 +38,13 @@ const FriendConvMessage: Component<{
             <Portal mount={document.querySelector('body')!}>
               <div class="modal-layout shadow">
                 <h2>确认撤回吗？</h2>
-                <button onClick={() => {
-                  ws.send('delete_msg', { message_id: props.item.message_id })
-                  unreveal()
-                  recallFriendStore(props.item)
-                }}
+                <button
+                  class='mr-2'
+                  onClick={() => {
+                    ws()?.send('delete_msg', { message_id: props.item.message_id })
+                    unreveal()
+                    recallFriendStore(props.item)
+                  }}
                 >
                   Yes
                 </button>

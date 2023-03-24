@@ -25,11 +25,44 @@ a {
   color: #007fff;
 }
 
+:root {
+  --bg-color: #fff;
+  --dlg-bg-color: #fefefe;
+  --btn-bg-color: #eee;
+  --text-name: #7f7f7f;
+}
+
 @media (prefers-color-scheme:dark) {
   body, html, code, input, textarea {
     color: whitesmoke;
   }
   body, html {
-    background-color: #222;
+    background-color: var(--bg-color);
   }
+  :root {
+    --bg-color: #222;
+    --dlg-bg-color: #333;
+    --btn-bg-color: #111;
+    --text-color: #f0f0f0;
+    --text-name: #7f7f7f;
+  }
+}
+
+button {
+  cursor: pointer;
+  border: 0;
+  background-color: var(--btn-bg-color);
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  outline: 1px solid #007fff00;
+  transition: all;
+  color: var(--text-color);
+}
+
+button:hover {
+  outline: 1px solid #007fff;
+}
+
+.text-name {
+  color: var(--text-name);
 }

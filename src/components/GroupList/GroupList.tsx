@@ -10,7 +10,7 @@ const GroupList: Component<{
   cls?: string
 }> = (props) => {
   if (props.list.length === 0)
-    ws.get('get_group_list')
+    ws()?.get('get_group_list')
   const [search, setSearch] = createSignal('')
   const listed = createMemo(() => {
     if (search().trim() === '')

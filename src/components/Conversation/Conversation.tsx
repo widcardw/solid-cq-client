@@ -4,7 +4,7 @@ import { Match, Switch } from 'solid-js'
 import { FriendConv } from './FriendConv'
 import { GroupConv } from './GroupConv'
 import type { Conversation as ConversationInterface, FriendConversation, GroupConversation } from '~/utils/stores/lists'
-import { curConv, setSendEl } from '~/utils/stores/lists'
+import { curConv, loading, setLoading, setSendEl } from '~/utils/stores/lists'
 import { ws } from '~/utils/ws/instance'
 import { MessageTarget } from '~/utils/ws/ws'
 import { buildMsg } from '~/cq/build-msg'
@@ -78,7 +78,9 @@ const Conversation: Component<{
             '!outline-none',
             'resize-none',
             'leading-loose',
+            'disabled:op-50',
           ])}
+          disabled={loading() || !curConv()}
           onKeyDown={async (e) => {
             if (!curConv())
               return
@@ -87,10 +89,14 @@ const Conversation: Component<{
             if (!(e.ctrlKey === true && e.code === 'Enter'))
               return
 
+            if (loading())
+              return
+            setLoading(true)
+
             if (curConv()?.type === MessageTarget.Private)
-              ws.m(MessageTarget.Private, curConv()!.id, await buildMsg((e.target as HTMLTextAreaElement).value))
+              ws()?.m(MessageTarget.Private, curConv()!.id, await buildMsg((e.target as HTMLTextAreaElement).value))
             else
-              ws.m(MessageTarget.Group, curConv()!.id, await buildMsg((e.target as HTMLTextAreaElement).value))
+              ws()?.m(MessageTarget.Group, curConv()!.id, await buildMsg((e.target as HTMLTextAreaElement).value))
           }}
         >
         </textarea>

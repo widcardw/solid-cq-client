@@ -15,7 +15,7 @@ import { ws } from './utils/ws/instance'
 const [listState, setListState] = createSignal<ListState>(ListState.Message)
 const App: Component = () => {
   onCleanup(() => {
-    ws.close()
+    ws()?.close()
   })
   return (
     <div class={styles.App}>

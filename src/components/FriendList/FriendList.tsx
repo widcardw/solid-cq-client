@@ -10,7 +10,7 @@ const ContactList: Component<{
   cls?: string
 }> = (props) => {
   if (props.list.length === 0)
-    ws.get('get_friend_list')
+    ws()?.get('get_friend_list')
 
   const [search, setSearch] = createSignal('')
   const listed = createMemo(() => {
