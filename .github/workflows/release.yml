@@ -5,11 +5,13 @@ on:
     tags:
       - '*'
 
+
 env:
-  DIST_NAME: solid-cq-client
+  DIST_NAME: solid-cq-client-dist
 
 jobs:
-  release-plugin:
+  my_job:
+    name: build dist
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -36,36 +38,29 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
-
       - name: Install dependencies and build
         id: build
         run: |
           pnpm install
           pnpm run build
-          mv dist ${{ env.DIST_NAME }}
-          zip -r ${{ env.DIST_NAME }}.zip ${{ env.DIST_NAME }}
-          ls
-          echo "::set-output name=tag_name::$(git tag --sort version:refname | tail -n 1)"
-
+          zip -r ${{ env.DIST_NAME }} dist
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ github.ref }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
-
-      - name: Upload zip file
-        id: upload-zip
+      - name: Upload Release Asset
+        id: upload-release-asset 
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./${{ env.DIST_NAME }}.zip
-          asset_name: ${{ env.DIST_NAME }}-${{ steps.build.outputs.tag_name }}.zip
+          asset_name: ${{ env.DIST_NAME }}.zip
           asset_content_type: application/zip
