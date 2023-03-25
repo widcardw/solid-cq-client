@@ -22,6 +22,11 @@ interface GroupConversation extends AbstractConversation {
 
 type Conversation = FriendConversation | GroupConversation
 
+interface WarningMessage {
+  type: 'Info' | 'Warning' | 'Error'
+  msg: string
+}
+
 const [friendList, setFriendList] = createSignal<FriendType[]>([])
 const [groupList, setGroupList] = createSignal<GroupType[]>([])
 const [recentConv, setRecentCov] = createSignal<(FriendType | GroupType)[]>([])
@@ -31,6 +36,7 @@ const [curConv, setCurConv] = createSignal<Conversation | undefined>()
 const [sendEl, setSendEl] = createSignal<HTMLTextAreaElement>()
 const [inited, setInited] = createSignal(false)
 const [loading, setLoading] = createSignal(false)
+const [warnings, setWarnings] = createSignal<WarningMessage[]>([])
 
 export {
   friendList, setFriendList,
@@ -42,6 +48,7 @@ export {
   sendEl, setSendEl,
   inited, setInited,
   loading, setLoading,
+  warnings, setWarnings,
 }
 
 export type {
