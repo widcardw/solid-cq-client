@@ -110,7 +110,7 @@ const Conversation: Component<{
           </div>
         </Show>
         <Show when={files()?.length}>
-          <div class={clsx('flex', 'border border-b-(solid zinc/20)')}>
+          <div class={clsx('border border-b-(solid zinc/20)', 'break-all')}>
             <For each={files() && Object.entries(files()!)}>
               {([, f]) => <span class='mr-2'>{f.name}</span>}
             </For>

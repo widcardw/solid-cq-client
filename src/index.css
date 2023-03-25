@@ -66,3 +66,7 @@ button:hover {
 .text-name {
   color: var(--text-name);
 }
+
+img {
+  display: block;
+}

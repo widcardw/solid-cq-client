@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import type { Component } from 'solid-js'
-import { For } from 'solid-js'
+import { For, createSignal } from 'solid-js'
 import { FriendConvMessage } from './FriendConvMessage'
 import type { FriendConversation } from '~/utils/stores/lists'
 
@@ -11,6 +11,7 @@ import './modal.css'
 const FriendConv: Component<{
   conv: FriendConversation
 }> = (props) => {
+  const [el, setEl] = createSignal<HTMLDivElement>()
   return (
     <>
       <div class={clsx([
@@ -22,11 +23,23 @@ const FriendConv: Component<{
       ])}
       >
         <div>{props.conv.id}</div>
-        <a href="#conv-bottom">
-          <div class="i-teenyicons-arrow-down-circle-outline" />
-        </a>
+        <div
+          class={clsx(
+            'i-teenyicons-arrow-down-circle-outline',
+            'hover:text-blue',
+            'cursor-pointer',
+          )}
+          onClick={() => {
+            el()?.scrollTo({
+              top: el()?.scrollHeight,
+            })
+          }}
+        />
       </div>
-      <div class={clsx('flex-1', 'of-y-auto', 'scroller', 'scroll-smooth')}>
+      <div
+        ref={r => setEl(r)}
+        class={clsx('flex-1', 'of-y-auto', 'scroller', 'scroll-smooth')}
+      >
         <For each={props.conv.list}>
           {item => (
             <FriendConvMessage item={item} />
