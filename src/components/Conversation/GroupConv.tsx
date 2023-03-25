@@ -16,15 +16,22 @@ const GroupConv: Component<{
         'p-2',
         'text-1.2rem',
         'border border-b-solid border-b-zinc/20',
+        'flex', 'items-center',
+        'justify-between',
       ])}
-      >{props.conv.id}
+      >
+        <div>{props.conv.id}</div>
+        <a href="#conv-bottom">
+          <div class="i-teenyicons-arrow-down-circle-outline" />
+        </a>
       </div>
-      <div class={clsx('flex-1', 'of-y-auto', 'scroller')}>
+      <div class={clsx('flex-1', 'of-y-auto', 'scroller', 'scroll-smooth')}>
         <For each={props.conv.list}>
           {item => (
             <GroupConvMessage item={item} />
           )}
         </For>
+        <div id="conv-bottom"></div>
       </div>
     </>
   )
