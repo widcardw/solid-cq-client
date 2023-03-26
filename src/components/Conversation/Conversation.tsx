@@ -9,48 +9,24 @@ import { curConv, loading, sendEl, setLoading, setSendEl } from '~/utils/stores/
 import { ws } from '~/utils/ws/instance'
 import { MessageTarget } from '~/utils/ws/ws'
 import { buildMsg } from '~/cq/build-msg'
-import type { SentMessage } from '~/utils/api/sent-message-type'
+import type { SentImageMessage, SentMessage } from '~/utils/api/sent-message-type'
 import { createFileMessage, createImageMessage } from '~/utils/api/sent-message-type'
 import { u8tobase64 } from '~/utils/msg/transform-tex'
 
-// const toBeSentMsg: SentMessage = []
+type InputElKeyboardEvent = KeyboardEvent & {
+  currentTarget: HTMLInputElement
+  target: Element
+}
 
-// async function pasteEvent(e: ClipboardEvent & {
-//   currentTarget: HTMLTextAreaElement
-//   target: Element
-// }) {
-//   const clipboardData = e.clipboardData
-//   if (!clipboardData)
-//     return
-//   const pasted = await Promise.all(Array.from(clipboardData.items).map((item) => {
-//     if (item.kind !== 'file')
-//       return Promise.resolve('')
+type TextareaElKeyboardEvent = KeyboardEvent & {
+  currentTarget: HTMLTextAreaElement
+  target: Element
+}
 
-//     if (!item.type.startsWith('image/'))
-//       return Promise.resolve(`（暂不支持的文件类型：${item.type}）`)
-
-//     return new Promise((resolve, reject) => {
-//       const blob = item.getAsFile()
-//       if (!blob)
-//         return resolve('')
-//       const url = URL.createObjectURL(blob)
-
-//       const reader = new FileReader()
-//       reader.onload = () => {
-//         if (reader.result && typeof reader.result === 'string') {
-//           const base64 = reader.result.split(',')[1]
-//           const cqcode = `[CQ:image,file=base64://${ba se64}]`
-//           const placeholder = `[粘贴的图片 ${url}]`
-//           // pastedImageMappings.push({ placeholder, cqcode, url })
-//           resolve(placeholder)
-//         }
-//       }
-//       reader.onerror = reject
-//       reader.readAsDataURL(blob)
-//     })
-//   }))
-//   const text = pasted.join('')
-// }
+type TextareaElClipboardEvent = ClipboardEvent & {
+  currentTarget: HTMLTextAreaElement
+  target: Element
+}
 
 const Conversation: Component<{
   cls?: string
@@ -58,9 +34,103 @@ const Conversation: Component<{
 }> = (props) => {
   const [showFile, setShowFile] = createSignal(false)
   const { files, open: openFileDlg, reset } = useFileDialog()
+  const [pastedImgs, setPastedImgs] = createSignal<SentImageMessage[]>([])
   onStartTyping(() => {
     sendEl()?.focus()
   })
+
+  const openImageSelector = () => {
+    if (curConv())
+      openFileDlg()
+  }
+
+  const toggleFilePathInput = () => {
+    if (curConv())
+      setShowFile(p => !p)
+  }
+
+  const uploadImageHandler = async () => {
+    const curConvInstance = curConv()
+    if (!curConvInstance)
+      return
+    const fs = files()
+    if (!fs)
+      return
+    const msgList: SentMessage = []
+    await Promise.all(Object.entries(fs).map(async ([, f]) => {
+      const bytes = new Uint8Array(await f.arrayBuffer())
+      const b64 = u8tobase64(bytes)
+      msgList.push(createImageMessage(b64))
+    }))
+    ws()?.m(curConvInstance.type, curConvInstance.id, msgList)
+    reset()
+  }
+
+  const uploadPastedImgsHandler = () => {
+    const curConvInstance = curConv()
+    if (!curConvInstance)
+      return
+    ws()?.m(curConvInstance.type, curConvInstance.id, pastedImgs())
+    setPastedImgs([])
+  }
+
+  const uploadFileHandler = async (e: InputElKeyboardEvent) => {
+    if (!(e.ctrlKey === true && e.code === 'Enter'))
+      return
+    const path = (e.target as HTMLInputElement).value
+    if (curConv()) {
+      ws()?.f(curConv()!.type, curConv()!.id, createFileMessage(path))
+      ;(e.target as HTMLInputElement).value = ''
+    }
+  }
+
+  const sendMessageHandler = async (e: TextareaElKeyboardEvent) => {
+    const curConvInstance = curConv()
+    if (!curConvInstance)
+      return
+    if (!(e.ctrlKey === true && e.code === 'Enter'))
+      return
+
+    if (loading())
+      return
+    setLoading(true)
+
+    ws()?.m(MessageTarget.Group, curConvInstance.id, await buildMsg((e.target as HTMLTextAreaElement).value))
+  }
+
+  const pasteImageHandler = async (e: TextareaElClipboardEvent) => {
+    if (!curConv())
+      return
+    const clipboardData = e.clipboardData
+    if (!clipboardData)
+      return
+    const pasted = await Promise.all(Array.from(clipboardData.items).map((item) => {
+      if (item.kind !== 'file')
+        return Promise.resolve('')
+      if (!item.type.startsWith('image/'))
+        return Promise.resolve(`暂不支持的文件类型: ${item.type}`)
+      return new Promise((resolve, reject) => {
+        const blob = item.getAsFile()
+        if (!blob)
+          return resolve('')
+        const reader = new FileReader()
+        reader.onload = () => {
+          if (reader.result && typeof reader.result === 'string') {
+            // eslint-disable-next-line prefer-template
+            const b64 = 'base64://' + reader.result.split(',')[1]
+            setPastedImgs(p => [...p, createImageMessage(b64)])
+            resolve('')
+          }
+        }
+        reader.onerror = reject
+        reader.readAsDataURL(blob)
+      })
+    }))
+    const el = sendEl()
+    if (el)
+      el.value += pasted.join('\n')
+  }
+
   return (
     <div class={clsx([props.cls, 'flex flex-col', 'h-100vh'])}>
       <div class={clsx(['flex flex-col', 'max-h-70vh', 'min-h-30vh'])}>
@@ -77,19 +147,12 @@ const Conversation: Component<{
         <div class={clsx('flex', 'items-center', 'border border-b-(solid zinc/30)')}>
           <div
             class={clsx('i-teenyicons-image-alt-outline', 'm-2', 'cursor-pointer', 'hover:text-blue')}
-            onClick={() => {
-              if (!curConv())
-                return
-              openFileDlg()
-            }}
+            onClick={openImageSelector}
           />
           <div
             class={clsx('i-teenyicons-text-document-outline', 'm-2', 'cursor-pointer', 'hover:text-blue')}
             title="macOS 使用 command + option + C 复制路径  Windows 使用 Shift + 右键复制路径"
-            onClick={() => {
-              if (curConv())
-                setShowFile(p => !p)
-            }}
+            onClick={toggleFilePathInput}
           />
         </div>
         <Show when={showFile()}>
@@ -97,46 +160,43 @@ const Conversation: Component<{
             <input
               placeholder='此处放入文件的绝对路径 Ctrl + Enter 发送'
               class={clsx('w-full', 'leading-loose', 'outline-none', 'border-none', 'border border-b-(solid zinc/20)')}
-              onKeyDown={(e) => {
-                if (!(e.ctrlKey === true && e.code === 'Enter'))
-                  return
-                const path = (e.target as HTMLInputElement).value
-                if (curConv()) {
-                  ws()?.f(curConv()!.type, curConv()!.id, createFileMessage(path))
-                  ;(e.target as HTMLInputElement).value = ''
-                }
-              }}
+              onKeyDown={uploadFileHandler}
             />
           </div>
         </Show>
         <Show when={files()?.length}>
           <div class={clsx('border border-b-(solid zinc/20)', 'break-all')}>
-            <For each={files() && Object.entries(files()!)}>
-              {([, f]) => <span class='mr-2'>{f.name}</span>}
+            <For each={files() && Array.from(files()!)}>
+              {f => <span class='mr-2'>{f.name}</span>}
             </For>
             <span
               class={clsx('text-blue', 'underline', 'cursor-pointer', 'mr-2')}
-              onClick={async () => {
-                if (!curConv())
-                  return
-                const fs = files()
-                if (!fs)
-                  return
-                const msgList: SentMessage = []
-                await Promise.all(Object.entries(fs).map(async ([, f]) => {
-                  const bytes = new Uint8Array(await f.arrayBuffer())
-                  const b64 = u8tobase64(bytes)
-                  msgList.push(createImageMessage(b64))
-                }))
-                ws()?.m(curConv()!.type, curConv()!.id, msgList)
-                reset()
-              }}
-            >Upload
+              onClick={uploadImageHandler}
+            >
+              Upload
             </span>
             <span
               class={clsx('text-red', 'underline', 'cursor-pointer')}
               onClick={reset}
-            >Cancel
+            >
+              Cancel
+            </span>
+          </div>
+        </Show>
+        <Show when={pastedImgs().length}>
+          <div class={clsx('border border-b-(solid zinc/20)', 'break-all')}>
+            <span class="mr-2">Pasted {pastedImgs().length} images</span>
+            <span
+              class={clsx('text-blue', 'underline', 'cursor-pointer', 'mr-2')}
+              onClick={uploadPastedImgsHandler}
+            >
+              Upload
+            </span>
+            <span
+              class={clsx('text-red', 'underline', 'cursor-pointer')}
+              onClick={reset}
+            >
+              Cancel
             </span>
           </div>
         </Show>
@@ -153,25 +213,9 @@ const Conversation: Component<{
             'disabled:op-50',
           ])}
           disabled={loading() || !curConv()}
-          onKeyDown={async (e) => {
-            if (!curConv())
-              return
-            if (!curConv()?.id)
-              return
-            if (!(e.ctrlKey === true && e.code === 'Enter'))
-              return
-
-            if (loading())
-              return
-            setLoading(true)
-
-            if (curConv()?.type === MessageTarget.Private)
-              ws()?.m(MessageTarget.Private, curConv()!.id, await buildMsg((e.target as HTMLTextAreaElement).value))
-            else
-              ws()?.m(MessageTarget.Group, curConv()!.id, await buildMsg((e.target as HTMLTextAreaElement).value))
-          }}
-        >
-        </textarea>
+          onKeyDown={sendMessageHandler}
+          onPaste={pasteImageHandler}
+        />
       </div>
     </div>
   )
