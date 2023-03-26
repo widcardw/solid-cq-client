@@ -8,6 +8,7 @@ import type { MessageTarget } from '../ws/ws'
 interface AbstractConversation {
   type: MessageTarget
   id: number
+  nick?: string
 }
 
 interface FriendConversation extends AbstractConversation {

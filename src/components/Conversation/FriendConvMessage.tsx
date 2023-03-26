@@ -27,7 +27,7 @@ const FriendConvMessage: Component<{
             // template string concatenate may conflict with unocss
             const el = sendEl()
             if (el)
-            // eslint-disable-next-line prefer-template
+              // eslint-disable-next-line prefer-template
               el.value = '[CQ:reply,id=' + props.item.message_id + ']' + el.value
           }}
         />

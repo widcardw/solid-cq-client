@@ -15,7 +15,15 @@ const OneFriend: Component<{
         pushPrivateConversation(props.friend)
         let idx = friendConvStore.findIndex(i => i.id === props.friend.user_id)
         if (idx === -1) {
-          setFriendConvStore(prev => [...prev, { id: props.friend.user_id, type: MessageTarget.Private, list: [] }])
+          setFriendConvStore(prev => [
+            ...prev,
+            {
+              id: props.friend.user_id,
+              type: MessageTarget.Private,
+              nick: props.friend.nickname,
+              list: [],
+            },
+          ])
           idx = friendConvStore.length - 1
         }
         setCurConv(friendConvStore[idx])

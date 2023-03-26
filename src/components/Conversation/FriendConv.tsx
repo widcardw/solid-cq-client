@@ -22,7 +22,7 @@ const FriendConv: Component<{
         'justify-between',
       ])}
       >
-        <div>{props.conv.id}</div>
+        <div>{props.conv.nick} {props.conv.id}</div>
         <div
           class={clsx(
             'i-teenyicons-arrow-down-circle-outline',
