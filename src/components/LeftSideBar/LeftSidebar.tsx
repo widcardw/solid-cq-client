@@ -24,13 +24,19 @@ const LeftSidebar: Component<{
       />
       <div
         class={clsx(['text-1.5rem', 'i-teenyicons-user-circle-outline', 'cursor-pointer', 'm-3', props.state === ListState.Contact && 'text-blue'])}
-        title="好友列表"
+        title="好友列表 双击刷新"
         onClick={() => props.onListStateChange(ListState.Contact)}
+        onDblClick={() => {
+          ws()?.get('get_friend_list')
+        }}
       />
       <div
         class={clsx(['text-1.5rem', 'i-teenyicons-users-outline', 'cursor-pointer', 'm-3', props.state === ListState.Groups && 'text-blue'])}
-        title="群列表"
+        title="群列表 双击刷新"
         onClick={() => props.onListStateChange(ListState.Groups)}
+        onDblClick={() => {
+          ws()?.get('get_group_list')
+        }}
       />
       <div class='flex-1' />
       <div

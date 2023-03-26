@@ -27,7 +27,7 @@ const OneGroup: Component<{
         }
         if (!groupConvStore[idx].nick) {
           const group_id = props.group.group_id
-          const group_name = groupList().find(i => i.group_id === group_id)?.group_name || '群'
+          const group_name = groupList().find(i => i.group_id === group_id)?.group_name
           setGroupConvStore(idx, 'nick', group_name)
         }
         setCurConv(groupConvStore[idx])
