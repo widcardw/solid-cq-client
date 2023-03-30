@@ -78,10 +78,11 @@ const Conversation: Component<{
     if (!(e.ctrlKey === true && e.code === 'Enter'))
       return
     const path = (e.target as HTMLInputElement).value
-    if (curConv()) {
-      ws()?.f(curConv()!.type, curConv()!.id, createFileMessage(path))
-      ;(e.target as HTMLInputElement).value = ''
-    }
+    const curConvInstance = curConv()
+    if (!curConvInstance)
+      return
+    ws()?.f(curConvInstance.type, curConvInstance.id, createFileMessage(path))
+    ;(e.target as HTMLInputElement).value = ''
   }
 
   const sendMessageHandler = async (e: TextareaElKeyboardEvent) => {
@@ -95,7 +96,7 @@ const Conversation: Component<{
       return
     setLoading(true)
 
-    ws()?.m(MessageTarget.Group, curConvInstance.id, await buildMsg((e.target as HTMLTextAreaElement).value))
+    ws()?.m(curConvInstance.type, curConvInstance.id, await buildMsg((e.target as HTMLTextAreaElement).value))
   }
 
   const pasteImageHandler = async (e: TextareaElClipboardEvent) => {
