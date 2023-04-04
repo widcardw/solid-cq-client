@@ -1,8 +1,8 @@
-interface SentMessageType {
+interface CqMessageType {
   type: string
 }
 
-interface SentTextMessage extends SentMessageType {
+interface CqTextMessage extends CqMessageType {
   type: 'text'
   data: {
     /**
@@ -12,7 +12,7 @@ interface SentTextMessage extends SentMessageType {
   }
 }
 
-interface SentReplyMessage extends SentMessageType {
+interface CqReplyMessage extends CqMessageType {
   type: 'reply'
   data: {
     /**
@@ -22,17 +22,25 @@ interface SentReplyMessage extends SentMessageType {
   }
 }
 
-interface SentImageMessage extends SentMessageType {
+interface CqImageMessage extends CqMessageType {
   type: 'image'
   data: {
     /**
      * 图片的路径
      */
     file: string
+    url?: string
   }
 }
 
-interface SentFileMessage extends SentMessageType {
+interface CqAtMessage extends CqMessageType {
+  type: 'at'
+  data: {
+    qq: number
+  }
+}
+
+interface CqFileMessage extends CqMessageType {
   type: 'file'
   data: {
     /**
@@ -46,32 +54,43 @@ interface SentFileMessage extends SentMessageType {
   }
 }
 
-type MultiTypeMessage = SentTextMessage | SentReplyMessage | SentImageMessage
+interface CqJsonCardMessage extends CqMessageType {
+  type: 'json'
+  data: {
+    data: string
+  }
+}
 
-type SentMessage = MultiTypeMessage | MultiTypeMessage[]
+type MultiTypeSentMessage = CqTextMessage | CqReplyMessage | CqImageMessage | CqAtMessage
 
-function createTextMessage(text: string): SentTextMessage {
+type CqSentMessage = MultiTypeSentMessage | MultiTypeSentMessage[]
+
+type MultiTypeReceivedMessage = CqTextMessage | CqReplyMessage | CqImageMessage | CqAtMessage | CqJsonCardMessage
+
+type CqReceivedMessage = MultiTypeReceivedMessage | MultiTypeReceivedMessage[]
+
+function createTextMessage(text: string): CqTextMessage {
   return {
     type: 'text',
     data: { text },
   }
 }
 
-function createReplyMessage(id: number): SentReplyMessage {
+function createReplyMessage(id: number): CqReplyMessage {
   return {
     type: 'reply',
     data: { id },
   }
 }
 
-function createImageMessage(file: string): SentImageMessage {
+function createImageMessage(file: string): CqImageMessage {
   return {
     type: 'image',
     data: { file },
   }
 }
 
-function createFileMessage(url: string, name?: string): SentFileMessage {
+function createFileMessage(url: string, name?: string): CqFileMessage {
   return {
     type: 'file',
     data: {
@@ -81,12 +100,23 @@ function createFileMessage(url: string, name?: string): SentFileMessage {
   }
 }
 
+function createAtMessage(qq: number): CqAtMessage {
+  return {
+    type: 'at',
+    data: { qq },
+  }
+}
+
 export type {
-  SentTextMessage,
-  SentReplyMessage,
-  SentImageMessage,
-  SentMessage,
-  SentFileMessage,
+  CqTextMessage,
+  CqReplyMessage,
+  CqImageMessage,
+  CqSentMessage,
+  CqFileMessage,
+  CqAtMessage,
+  CqReceivedMessage,
+  CqJsonCardMessage,
+  MultiTypeReceivedMessage,
 }
 
 export {
@@ -94,4 +124,5 @@ export {
   createReplyMessage,
   createImageMessage,
   createFileMessage,
+  createAtMessage,
 }
