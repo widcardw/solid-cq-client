@@ -22,7 +22,7 @@ const App: Component = () => {
     <>
       <div class={styles.App}>
         <LeftSidebar state={listState()} onListStateChange={setListState} />
-        <div class={clsx(['w-250px', 'h-100vh', 'border border-l-solid border-r-solid border-l-zinc border-r-zinc'])}>
+        <div class={clsx(['w-250px', 'h-100vh', 'border border-l-solid border-r-solid border-l-zinc/40 border-r-zinc/40'])}>
           <Switch>
             <Match when={listState() === ListState.Message}>
               <RecentMessage list={recentConv()} />

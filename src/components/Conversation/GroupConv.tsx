@@ -29,9 +29,9 @@ const GroupConv: Component<{
             'cursor-pointer',
           )}
           onClick={() => {
-            el()?.scrollTo({
-              top: el()?.scrollHeight,
-            })
+            const e = el()
+            if (e)
+              e.scrollTo({ top: e.scrollHeight })
           }}
         />
       </div>

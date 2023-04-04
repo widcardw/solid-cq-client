@@ -24,7 +24,7 @@ const GroupList: Component<{
         type='search'
         class={clsx([
           'outline-none',
-          'border-none border border-b-solid border-b-gray/30',
+          'border-none border border-b-solid border-b-gray/20',
           'p-2',
           'text-1.2rem',
         ])}

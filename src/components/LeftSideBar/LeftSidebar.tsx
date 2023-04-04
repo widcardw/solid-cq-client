@@ -68,7 +68,7 @@ const LeftSidebar: Component<{
               <input
                 ref={setEl}
                 value={wsUrl()}
-                class={clsx('w-200px leading-loose', 'outline-none', 'border border-(solid zinc)', 'rounded')}
+                class={clsx('w-200px leading-loose', 'outline-none', 'border border-(solid zinc/40)', 'rounded')}
               />
             </div>
             <button
