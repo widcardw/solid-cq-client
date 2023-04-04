@@ -2,6 +2,7 @@ import { isFriendType } from '../api/friend-type'
 import type { GroupType } from '../api/group-type'
 import { isGroupType } from '../api/group-type'
 import { isGroup, isPrivate } from '../api/received-msg-types'
+import { ws } from '../ws/instance'
 import { groupList, recentConv, setRecentCov } from './lists'
 
 function pushGroupConversation(data: any) {
@@ -29,12 +30,17 @@ function pushGroupConversation(data: any) {
     // ReceivedGroupMessage or didn't find group in cache
     else {
       let name = ''
-      // Did not find group in cache
-      if (isGroupType(data))
+      // Did not find group in conversation cache
+      if (isGroupType(data)) {
         name = data.group_name
+      }
       // ReceivedGroupMessage
-      else
+      else {
+        if (groupList().length === 0)
+          ws()?.get('get_group_list')
+
         name = groupList().find(i => i.group_id === data.group_id)?.group_name || `群 ${data.group_id}`
+      }
 
       setRecentCov((prev) => {
         return [

@@ -1,4 +1,4 @@
-import type { SentFileMessage, SentMessage } from '../api/sent-message-type'
+import type { CqFileMessage, CqSentMessage } from '../api/sent-message-type'
 import type { DeleteMsgParams, GetMsgParams, GroupFileSentParams, GroupMsgSentParams, PrivateFileSentParams, PrivateMsgSentParams, WsSentParams } from '../api/ws-sent-params'
 import { setWarnings } from '../stores/lists'
 import { setWs } from './instance'
@@ -54,7 +54,7 @@ class CqWs {
     this.ws.send(JSON.stringify({ action, params }))
   }
 
-  m(target: MessageTarget, id: number, msg: SentMessage) {
+  m(target: MessageTarget, id: number, msg: CqSentMessage) {
     if (target === MessageTarget.Private) {
       const params: PrivateMsgSentParams = {
         user_id: id,
@@ -71,7 +71,7 @@ class CqWs {
     }
   }
 
-  f(target: MessageTarget, id: number, file: SentFileMessage) {
+  f(target: MessageTarget, id: number, file: CqFileMessage) {
     if (target === MessageTarget.Private) {
       const params: PrivateFileSentParams = {
         file: file.data.file,

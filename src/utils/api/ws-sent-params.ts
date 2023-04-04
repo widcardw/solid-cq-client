@@ -1,16 +1,16 @@
-import type { SentMessage } from './sent-message-type'
+import type { CqSentMessage } from './sent-message-type'
 
 interface MsgParams {
 }
 
 interface PrivateMsgSentParams extends MsgParams {
   user_id: number
-  message: SentMessage
+  message: CqSentMessage
 }
 
 interface GroupMsgSentParams extends MsgParams {
   group_id: number
-  message: SentMessage
+  message: CqSentMessage
 }
 
 interface PrivateFileSentParams extends MsgParams {

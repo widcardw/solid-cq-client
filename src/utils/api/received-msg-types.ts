@@ -1,3 +1,5 @@
+import type { CqReceivedMessage } from './sent-message-type'
+
 interface ReceivedPrivateMessage {
   time: number
   self_id: number
@@ -7,7 +9,7 @@ interface ReceivedPrivateMessage {
   message_id: number
   user_id: number
   target_id: number
-  message: string
+  message: CqReceivedMessage
   raw_message: string
   font: number
   sender: {
@@ -28,7 +30,7 @@ interface ReceivedGroupMessage {
   sub_type: 'normal' | 'anonymous' | 'notice'
   message_id: number
   user_id: number
-  message: string
+  message: CqReceivedMessage
   raw_message: string
   font: number
   sender: {

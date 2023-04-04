@@ -2,9 +2,10 @@ import clsx from 'clsx'
 import type { Component } from 'solid-js'
 import { Show } from 'solid-js'
 import { Portal } from 'solid-js/web'
+import { MessageShown } from '../MessageShown/MessageShown'
 import type { ReceivedPrivateMessage } from '~/utils/api/received-msg-types'
 import { useConfirm } from '~/utils/hook/useConfirm'
-import { transformReceived } from '~/utils/msg/received-msg-transformer'
+// import { transformReceived } from '~/utils/msg/received-msg-transformer'
 import { sendEl } from '~/utils/stores/lists'
 import { recallFriendStore } from '~/utils/stores/store'
 import { ws } from '~/utils/ws/instance'
@@ -29,6 +30,16 @@ const FriendConvMessage: Component<{
             if (el)
               // eslint-disable-next-line prefer-template
               el.value = '[CQ:reply,id=' + props.item.message_id + ']' + el.value
+          }}
+        />
+        <div
+          class={clsx('i-teenyicons-at-solid', 'cursor-pointer', 'hover:text-blue', 'icon')}
+          onClick={() => {
+            // template string concatenate may conflict with unocss
+            const el = sendEl()
+            if (el)
+            // eslint-disable-next-line prefer-template
+              el.value = el.value + '[CQ:at,qq=' + props.item.sender.user_id + ']'
           }}
         />
         <Show when={props.item.self_id === props.item.sender.user_id && !props.item.deleted}>
@@ -56,7 +67,8 @@ const FriendConvMessage: Component<{
           </Show>
         </Show>
       </div>
-      <div class={clsx('break-all')} innerHTML={transformReceived(props.item.message)} />
+      {/* <div class={clsx('break-all')} innerHTML={transformReceived(props.item.message)} /> */}
+      <MessageShown msg={props.item.message} />
     </div>
   )
 }
