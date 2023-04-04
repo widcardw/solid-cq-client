@@ -73,6 +73,19 @@ interface ReceivedGroupRecall {
   operator_id: number
 }
 
+interface ReceivedForwardedOneMessage {
+  content: CqReceivedMessage
+  sender: {
+    nickname: string
+    user_id: number
+  }
+  time: number
+}
+
+interface ReceivedForwardedMessage {
+  messages: ReceivedForwardedOneMessage[]
+}
+
 function isPrivate(obj: any): obj is ReceivedPrivateMessage {
   return obj && obj.time && obj.message_type && obj.message_type === 'private'
 }
@@ -81,14 +94,21 @@ function isGroup(obj: any): obj is ReceivedGroupMessage {
   return obj && obj.time && obj.message_type && obj.message_type === 'group'
 }
 
+function isForwardedMessage(obj: any): obj is ReceivedForwardedMessage {
+  return obj && obj.messages && Array.isArray(obj.messages)
+}
+
 export type {
   ReceivedPrivateMessage,
   ReceivedGroupMessage,
   ReceivedFriendRecall,
   ReceivedGroupRecall,
+  ReceivedForwardedOneMessage,
+  ReceivedForwardedMessage,
 }
 
 export {
   isPrivate,
   isGroup,
+  isForwardedMessage,
 }

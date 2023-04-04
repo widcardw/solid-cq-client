@@ -1,3 +1,5 @@
+import type { ReceivedForwardedMessage } from './received-msg-types'
+
 interface CqMessageType {
   type: string
 }
@@ -75,11 +77,27 @@ interface CqRecordMessage extends CqMessageType {
   }
 }
 
+interface CqForwardMessage extends CqMessageType {
+  type: 'forward'
+  data: {
+    id: string
+  }
+  details?: ReceivedForwardedMessage
+}
+
 type MultiTypeSentMessage = CqTextMessage | CqReplyMessage | CqImageMessage | CqAtMessage
 
 type CqSentMessage = MultiTypeSentMessage | MultiTypeSentMessage[]
 
-type MultiTypeReceivedMessage = CqTextMessage | CqReplyMessage | CqImageMessage | CqAtMessage | CqJsonCardMessage | CqFaceMessage | CqRecordMessage
+type MultiTypeReceivedMessage =
+CqTextMessage
+| CqReplyMessage
+| CqImageMessage
+| CqAtMessage
+| CqJsonCardMessage
+| CqFaceMessage
+| CqRecordMessage
+| CqForwardMessage
 
 type CqReceivedMessage = MultiTypeReceivedMessage | MultiTypeReceivedMessage[]
 
@@ -130,6 +148,7 @@ export type {
   CqAtMessage,
   CqFaceMessage,
   CqRecordMessage,
+  CqForwardMessage,
   CqReceivedMessage,
   CqJsonCardMessage,
   MultiTypeReceivedMessage,

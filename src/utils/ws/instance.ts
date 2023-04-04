@@ -1,9 +1,9 @@
 import { createSignal } from 'solid-js'
 import { isFriendList } from '../api/friend-type'
 import { isGroupList } from '../api/group-type'
-import { isGroup, isPrivate } from '../api/received-msg-types'
+import { isForwardedMessage, isGroup, isPrivate } from '../api/received-msg-types'
 import { pushGroupConversation, pushPrivateConversation } from '../stores/conv'
-import { sendEl, setFriendList, setGroupList, setLoading } from '../stores/lists'
+import { lastForwardId, sendEl, setCurConv, setForwardMap, setFriendList, setGroupList, setLastforwardId, setLoading } from '../stores/lists'
 import { addFriendStore, addGroupStore, recallFriendStore, recallGroupStore } from '../stores/store'
 import { createWs } from './ws'
 import type { CqWs } from './ws'
@@ -34,6 +34,16 @@ function initWs(url: string) {
       setGroupList(data.data)
       return
     }
+
+    if (isForwardedMessage(data.data)) {
+      const i = lastForwardId()
+      if (i.trim() !== '') {
+        setForwardMap(lastForwardId(), data.data)
+        setLastforwardId('')
+        return
+      }
+    }
+
     if (data.message === '' && data.retcode === 0 && data.status === 'ok') {
       if (data.data && Object.keys(data.data).length === 1 && typeof data.data.message_id === 'number') {
         const el = sendEl()

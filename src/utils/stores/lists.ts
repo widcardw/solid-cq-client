@@ -2,7 +2,7 @@ import { createSignal } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import type { FriendType } from '../api/friend-type'
 import type { GroupType } from '../api/group-type'
-import type { ReceivedGroupMessage, ReceivedPrivateMessage } from '../api/received-msg-types'
+import type { ReceivedForwardedMessage, ReceivedGroupMessage, ReceivedPrivateMessage } from '../api/received-msg-types'
 import type { MessageTarget } from '../ws/ws'
 
 interface AbstractConversation {
@@ -38,6 +38,8 @@ const [sendEl, setSendEl] = createSignal<HTMLTextAreaElement>()
 const [inited, setInited] = createSignal(false)
 const [loading, setLoading] = createSignal(false)
 const [warnings, setWarnings] = createSignal<WarningMessage[]>([])
+const [forwardMap, setForwardMap] = createStore<Record<string, ReceivedForwardedMessage>>({})
+const [lastForwardId, setLastforwardId] = createSignal('')
 
 export {
   friendList, setFriendList,
@@ -50,6 +52,8 @@ export {
   inited, setInited,
   loading, setLoading,
   warnings, setWarnings,
+  forwardMap, setForwardMap,
+  lastForwardId, setLastforwardId,
 }
 
 export type {

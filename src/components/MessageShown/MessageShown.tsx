@@ -4,8 +4,8 @@ import { unAccessor } from 'solidjs-use'
 import { AtMessageShown, FaceMessageShown, ReplyMessageShown, TextMessageShown } from './TextMessageShown'
 import { ImageMessageShown } from './ImageMessageShown'
 import { JsonMessageShown } from './JsonMessageShown'
-import { RecordMessageShown } from './OtherMessageShown'
-import type { CqAtMessage, CqFaceMessage, CqImageMessage, CqJsonCardMessage, CqReceivedMessage, CqRecordMessage, CqTextMessage, MultiTypeReceivedMessage } from '~/utils/api/sent-message-type'
+import { ForwardMessageFolded, RecordMessageShown } from './OtherMessageShown'
+import type { CqAtMessage, CqFaceMessage, CqForwardMessage, CqImageMessage, CqJsonCardMessage, CqReceivedMessage, CqRecordMessage, CqTextMessage, MultiTypeReceivedMessage } from '~/utils/api/sent-message-type'
 
 const OnePieceOfMessage: Component<{
   msg: MultiTypeReceivedMessage
@@ -35,6 +35,9 @@ const OnePieceOfMessage: Component<{
       </Match>
       <Match when={props.msg.type === 'record'}>
         <RecordMessageShown file={(props.msg as CqRecordMessage).data.file} />
+      </Match>
+      <Match when={props.msg.type === 'forward'}>
+        <ForwardMessageFolded id={(props.msg as CqForwardMessage).data.id} details={(props.msg as CqForwardMessage).details} />
       </Match>
     </Switch>
   )

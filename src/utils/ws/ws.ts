@@ -40,8 +40,8 @@ class CqWs {
     }
   }
 
-  get(action: string) {
-    this.ws.send(JSON.stringify({ action }))
+  get(action: string, params?: any) {
+    this.ws.send(JSON.stringify({ action, params }))
   }
 
   send(action: 'send_private_msg', params: PrivateMsgSentParams): void
