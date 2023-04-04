@@ -16,8 +16,15 @@ const ReplyMessageShown: Component = () => {
   return <>[回复]</>
 }
 
+const FaceMessageShown: Component<{
+  id: number
+}> = (props) => {
+  return <>[表情 {props.id}]</>
+}
+
 export {
   TextMessageShown,
   AtMessageShown,
   ReplyMessageShown,
+  FaceMessageShown,
 }

@@ -61,11 +61,25 @@ interface CqJsonCardMessage extends CqMessageType {
   }
 }
 
+interface CqFaceMessage extends CqMessageType {
+  type: 'face'
+  data: {
+    id: number
+  }
+}
+
+interface CqRecordMessage extends CqMessageType {
+  type: 'record'
+  data: {
+    file: string
+  }
+}
+
 type MultiTypeSentMessage = CqTextMessage | CqReplyMessage | CqImageMessage | CqAtMessage
 
 type CqSentMessage = MultiTypeSentMessage | MultiTypeSentMessage[]
 
-type MultiTypeReceivedMessage = CqTextMessage | CqReplyMessage | CqImageMessage | CqAtMessage | CqJsonCardMessage
+type MultiTypeReceivedMessage = CqTextMessage | CqReplyMessage | CqImageMessage | CqAtMessage | CqJsonCardMessage | CqFaceMessage | CqRecordMessage
 
 type CqReceivedMessage = MultiTypeReceivedMessage | MultiTypeReceivedMessage[]
 
@@ -114,6 +128,8 @@ export type {
   CqSentMessage,
   CqFileMessage,
   CqAtMessage,
+  CqFaceMessage,
+  CqRecordMessage,
   CqReceivedMessage,
   CqJsonCardMessage,
   MultiTypeReceivedMessage,
