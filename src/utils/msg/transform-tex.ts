@@ -48,7 +48,7 @@ async function svgToPng(svg: string) {
   svg = svg.match(/<svg(.*)<\/svg>/)![0]
   svg = addPadding(svg)
   if (!inited()) {
-    await initWasm(fetch('https://unpkg.com/@resvg/resvg-wasm/index_bg.wasm'))
+    await initWasm(fetch('/index_bg.wasm'))
     setInited(true)
   }
 
