@@ -9,7 +9,7 @@ import { curConv, loading, sendEl, setLoading, setSendEl } from '~/utils/stores/
 import { ws } from '~/utils/ws/instance'
 import { MessageTarget } from '~/utils/ws/ws'
 import { buildMsg } from '~/cq/build-msg'
-import type { SentImageMessage, SentMessage } from '~/utils/api/sent-message-type'
+import type { CqImageMessage, CqSentMessage } from '~/utils/api/sent-message-type'
 import { createFileMessage, createImageMessage } from '~/utils/api/sent-message-type'
 import { u8tobase64 } from '~/utils/msg/transform-tex'
 
@@ -34,7 +34,7 @@ const Conversation: Component<{
 }> = (props) => {
   const [showFile, setShowFile] = createSignal(false)
   const { files, open: openFileDlg, reset } = useFileDialog()
-  const [pastedImgs, setPastedImgs] = createSignal<SentImageMessage[]>([])
+  const [pastedImgs, setPastedImgs] = createSignal<CqImageMessage[]>([])
   onStartTyping(() => {
     sendEl()?.focus()
   })
@@ -56,8 +56,8 @@ const Conversation: Component<{
     const fs = files()
     if (!fs)
       return
-    const msgList: SentMessage = []
-    await Promise.all(Object.entries(fs).map(async ([, f]) => {
+    const msgList: CqSentMessage = []
+    await Promise.all(Array.from(fs).map(async (f) => {
       const bytes = new Uint8Array(await f.arrayBuffer())
       const b64 = u8tobase64(bytes)
       msgList.push(createImageMessage(b64))
@@ -90,6 +90,16 @@ const Conversation: Component<{
     if (!curConvInstance)
       return
     if (!(e.ctrlKey === true && e.code === 'Enter'))
+      return
+
+    // If there is any pasted images, then send them first
+    if (pastedImgs().length > 0) {
+      uploadPastedImgsHandler()
+      return
+    }
+
+    // Do not send empty message
+    if ((e.target as HTMLTextAreaElement).value.trim() === '')
       return
 
     if (loading())
@@ -144,8 +154,8 @@ const Conversation: Component<{
           </Match>
         </Switch>
       </div>
-      <div class={clsx(['flex flex-col', 'border border-t-solid border-t-zinc', 'flex-1'])}>
-        <div class={clsx('flex', 'items-center', 'border border-b-(solid zinc/30)')}>
+      <div class={clsx(['flex flex-col', 'border border-t-solid border-t-zinc/40', 'flex-1'])}>
+        <div class={clsx('flex', 'items-center', 'border border-b-(solid zinc/20)')}>
           <div
             class={clsx('i-teenyicons-image-alt-outline', 'm-2', 'cursor-pointer', 'hover:text-blue')}
             onClick={openImageSelector}
