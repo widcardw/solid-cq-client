@@ -3,8 +3,11 @@ import { isFriendList } from '../api/friend-type'
 import { isGroupList } from '../api/group-type'
 import { isForwardedMessage, isGroup, isPrivate } from '../api/received-msg-types'
 import { pushGroupConversation, pushPrivateConversation } from '../stores/conv'
-import { lastForwardId, sendEl, setCurConv, setForwardMap, setFriendList, setGroupList, setLastforwardId, setLoading } from '../stores/lists'
+import { WarningType, lastForwardId, sendEl, setForwardMap, setFriendList, setGroupFsStore, setGroupList, setLastforwardId, setLoading, setWarnings, warnings } from '../stores/lists'
 import { addFriendStore, addGroupStore, recallFriendStore, recallGroupStore } from '../stores/store'
+import { isGroupUploadFile, isOfflineFile, receivedGroupUploadHandler, receivedOfflineFileHandler } from '../api/notice'
+import { _createFileMessage } from '../api/sent-message-type'
+import { isGroupRootFsListMessage, isSingleFileUrl } from '../api/group-fs'
 import { createWs } from './ws'
 import type { CqWs } from './ws'
 
@@ -22,6 +25,12 @@ function initWs(url: string) {
 
       else if (data.notice_type === 'group_recall')
         recallGroupStore(data)
+
+      else if (isOfflineFile(data))
+        receivedOfflineFileHandler(data)
+
+      else if (isGroupUploadFile(data))
+        receivedGroupUploadHandler(data)
 
       return
     }
@@ -65,6 +74,20 @@ function initWs(url: string) {
     if (isGroup(data)) {
       pushGroupConversation(data)
       addGroupStore(data)
+      return
+    }
+
+    const fs = data.data
+    if (isGroupRootFsListMessage(fs)) {
+      setGroupFsStore(
+        fs.files[0].group_id || fs.folders[0].group_id,
+        fs,
+      )
+      return
+    }
+
+    if (isSingleFileUrl(fs)) {
+      setWarnings(p => [...p, { type: WarningType.Info, msg: '点击下载', extra: fs.url }])
       return
     }
 

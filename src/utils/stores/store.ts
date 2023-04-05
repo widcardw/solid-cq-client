@@ -2,6 +2,11 @@ import type { ReceivedFriendRecall, ReceivedGroupMessage, ReceivedGroupRecall, R
 import { MessageTarget } from '../ws/ws'
 import { friendConvStore, groupConvStore, groupList, setFriendConvStore, setGroupConvStore } from './lists'
 
+/**
+ * Store the message with this group in a global storage (not permanently).
+ * If the group label is clicked, then the current conversation will be set
+ * to the stored conversation.
+ */
 function addGroupStore(data: ReceivedGroupMessage) {
   let idx = groupConvStore.findIndex(i => i.id === data.group_id)
   if (idx !== -1) {
@@ -25,6 +30,11 @@ function addGroupStore(data: ReceivedGroupMessage) {
   }
 }
 
+/**
+ * Store the message with this friend in a global storage (not permanently).
+ * If the friend label is clicked, then the current conversation will be set
+ * to the stored conversation.
+ */
 function addFriendStore(data: ReceivedPrivateMessage) {
   const idx = friendConvStore.findIndex(i => i.id === data.user_id)
   if (idx !== -1) {

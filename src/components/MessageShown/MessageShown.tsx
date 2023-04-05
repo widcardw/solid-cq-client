@@ -5,12 +5,13 @@ import { AtMessageShown, FaceMessageShown, ReplyMessageShown, TextMessageShown }
 import { ImageMessageShown } from './ImageMessageShown'
 import { JsonMessageShown } from './JsonMessageShown'
 import { ForwardMessageFolded, RecordMessageShown } from './OtherMessageShown'
-import type { CqAtMessage, CqFaceMessage, CqForwardMessage, CqImageMessage, CqJsonCardMessage, CqReceivedMessage, CqRecordMessage, CqTextMessage, MultiTypeReceivedMessage } from '~/utils/api/sent-message-type'
+import { FileMessageShown } from './FileMessageShown'
+import type { CqAtMessage, CqFaceMessage, CqFileMessage, CqForwardMessage, CqImageMessage, CqJsonCardMessage, CqReceivedMessage, CqRecordMessage, CqTextMessage, MultiTypeReceivedMessage } from '~/utils/api/sent-message-type'
 
 const OnePieceOfMessage: Component<{
   msg: MultiTypeReceivedMessage
 }> = (props) => {
-  if (!['text', 'at', 'reply', 'image', 'json', 'face', 'record'].includes(props.msg.type))
+  if (!['text', 'at', 'reply', 'image', 'json', 'face', 'record', 'forward', 'file'].includes(props.msg.type))
     console.warn('Not a valid message type. ', unAccessor(props.msg))
 
   return (
@@ -38,6 +39,9 @@ const OnePieceOfMessage: Component<{
       </Match>
       <Match when={props.msg.type === 'forward'}>
         <ForwardMessageFolded id={(props.msg as CqForwardMessage).data.id} details={(props.msg as CqForwardMessage).details} />
+      </Match>
+      <Match when={props.msg.type === 'file'}>
+        <FileMessageShown file={(props.msg as CqFileMessage)} />
       </Match>
     </Switch>
   )

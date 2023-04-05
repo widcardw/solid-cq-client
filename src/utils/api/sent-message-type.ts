@@ -53,6 +53,7 @@ interface CqFileMessage extends CqMessageType {
      * 文件名
      */
     name: string
+    size?: number
   }
 }
 
@@ -98,6 +99,7 @@ CqTextMessage
 | CqFaceMessage
 | CqRecordMessage
 | CqForwardMessage
+| CqFileMessage
 
 type CqReceivedMessage = MultiTypeReceivedMessage | MultiTypeReceivedMessage[]
 
@@ -139,6 +141,13 @@ function createAtMessage(qq: number): CqAtMessage {
   }
 }
 
+function _createFileMessage(file: { name: string; file: string; size: number }): CqFileMessage {
+  return {
+    type: 'file',
+    data: file,
+  }
+}
+
 export type {
   CqTextMessage,
   CqReplyMessage,
@@ -160,4 +169,5 @@ export {
   createImageMessage,
   createFileMessage,
   createAtMessage,
+  _createFileMessage,
 }

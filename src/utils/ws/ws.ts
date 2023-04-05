@@ -1,6 +1,6 @@
 import type { CqFileMessage, CqSentMessage } from '../api/sent-message-type'
 import type { DeleteMsgParams, GetMsgParams, GroupFileSentParams, GroupMsgSentParams, PrivateFileSentParams, PrivateMsgSentParams, WsSentParams } from '../api/ws-sent-params'
-import { setWarnings } from '../stores/lists'
+import { WarningType, setWarnings } from '../stores/lists'
 import { setWs } from './instance'
 
 enum MessageTarget {
@@ -16,15 +16,17 @@ class CqWs {
   constructor(url: string) {
     this.ws = new WebSocket(url)
     this.ws.onerror = (ev) => {
-      setWarnings(p => [...p, { type: 'Error', msg: String(ev) }])
+      setWarnings(p => [...p, { type: WarningType.Error, msg: String(ev) }])
       setWs(undefined)
     }
     this.ws.onopen = () => {
-      setWarnings(p => [...p, { type: 'Info', msg: '已连接' }])
+      setWarnings(p => [...p, { type: WarningType.Info, msg: '已连接' }])
+      this.get('get_friend_list')
+      this.get('get_group_list')
     }
     this.ws.onclose = (ev) => {
       console.warn('WS closed', ev)
-      setWarnings(p => [...p, { type: 'Warning', msg: '连接已断开' }])
+      setWarnings(p => [...p, { type: WarningType.Warning, msg: '连接已断开' }])
       setWs(undefined)
     }
   }

@@ -4,6 +4,7 @@ import type { FriendType } from '../api/friend-type'
 import type { GroupType } from '../api/group-type'
 import type { ReceivedForwardedMessage, ReceivedGroupMessage, ReceivedPrivateMessage } from '../api/received-msg-types'
 import type { MessageTarget } from '../ws/ws'
+import type { GroupFsList } from '../api/group-fs'
 
 interface AbstractConversation {
   type: MessageTarget
@@ -23,9 +24,16 @@ interface GroupConversation extends AbstractConversation {
 
 type Conversation = FriendConversation | GroupConversation
 
+enum WarningType {
+  Info = 'Info',
+  Warning = 'Warning',
+  Error = 'Error',
+}
+
 interface WarningMessage {
-  type: 'Info' | 'Warning' | 'Error'
+  type: WarningType
   msg: string
+  extra?: string
 }
 
 const [friendList, setFriendList] = createSignal<FriendType[]>([])
@@ -40,6 +48,7 @@ const [loading, setLoading] = createSignal(false)
 const [warnings, setWarnings] = createSignal<WarningMessage[]>([])
 const [forwardMap, setForwardMap] = createStore<Record<string, ReceivedForwardedMessage>>({})
 const [lastForwardId, setLastforwardId] = createSignal('')
+const [groupFsStore, setGroupFsStore] = createStore<Record<number, GroupFsList>>({})
 
 export {
   friendList, setFriendList,
@@ -54,6 +63,8 @@ export {
   warnings, setWarnings,
   forwardMap, setForwardMap,
   lastForwardId, setLastforwardId,
+  groupFsStore, setGroupFsStore,
+  WarningType,
 }
 
 export type {

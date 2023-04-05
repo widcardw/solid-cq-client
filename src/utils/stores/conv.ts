@@ -5,6 +5,10 @@ import { isGroup, isPrivate } from '../api/received-msg-types'
 import { ws } from '../ws/instance'
 import { groupList, recentConv, setRecentCov } from './lists'
 
+/**
+ * Find if there is a conversation with the group
+ * then add it to the recent conversation list.
+ */
 function pushGroupConversation(data: any) {
   if (isGroup(data) || isGroupType(data)) {
     const idx = recentConv().findIndex((i) => {
@@ -55,6 +59,10 @@ function pushGroupConversation(data: any) {
   }
 }
 
+/**
+ * Find if there is a conversation with the person
+ * then add him/her to the recent conversation list.
+ */
 function pushPrivateConversation(data: any) {
   if (isPrivate(data) || isFriendType(data)) {
     const idx = recentConv().findIndex((i) => {

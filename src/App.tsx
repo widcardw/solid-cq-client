@@ -12,6 +12,7 @@ import { RecentMessage } from './components/RecentMessage/RecentMessage'
 import { ListState } from './utils/list-state'
 import { curConv, friendList, groupList, recentConv, setWarnings, warnings } from './utils/stores/lists'
 import { ws } from './utils/ws/instance'
+import { ICONMAP } from './utils/hook/icon-map'
 
 const [listState, setListState] = createSignal<ListState>(ListState.Message)
 const App: Component = () => {
@@ -39,7 +40,7 @@ const App: Component = () => {
       </div>
       <Show when={warnings().length}>
         <Portal mount={document.querySelector('body')!}>
-          <div class={clsx('absolute', 'right-8 bottom-2', 'mb-2 mr-2', 'max-w-200px')}>
+          <div class={clsx('absolute', 'right-8 bottom-2', 'mb-2 mr-2', 'max-w-200px', 'z-100')}>
             <For each={warnings()}>
               {(warning, i) => (
                 <div
@@ -48,8 +49,9 @@ const App: Component = () => {
                     background: 'var(--dlg-bg-color)',
                   }}
                 >
-                  <div>{warning.type}</div>
+                  <div class={ICONMAP[warning.type]} />
                   <div>{warning.msg}</div>
+                  {warning.extra && <a href={warning.extra} target="_blank" download="file" referrerPolicy='no-referrer'>链接</a>}
                   <div class='flex-1' />
                   <div
                     class={clsx('i-teenyicons-x-small-outline', 'hover:text-blue', 'cursor-pointer')}

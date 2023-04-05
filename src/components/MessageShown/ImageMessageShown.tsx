@@ -37,12 +37,16 @@ const ZoomedImg: Component<{
           'top-4', 'right-4',
           'bg-zinc-800/70',
           'rounded-full',
+          'flex space-x-4',
         )}
       >
+        <a href={props.url} referrerPolicy='no-referrer' download='图片' target='_blank'>
+          <div class={clsx('i-teenyicons-download-solid', 'text-2rem', 'text-white', 'hover:text-blue')} />
+        </a>
         <div
           class={clsx(
             'i-teenyicons-x-solid',
-            'text-3rem',
+            'text-2rem',
             'cursor-pointer',
             'text-white',
             'hover:text-blue',

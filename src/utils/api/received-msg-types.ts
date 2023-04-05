@@ -45,7 +45,7 @@ interface ReceivedGroupMessage {
     title: string
   }
   group_id: number
-  anonymous: {
+  anonymous?: {
     id: number
     name: string
     flag: string
