@@ -119,7 +119,7 @@ const Conversation: Component<{
       if (item.kind !== 'file')
         return Promise.resolve('')
       if (!item.type.startsWith('image/'))
-        return Promise.resolve(`暂不支持的文件类型: ${item.type}`)
+        return Promise.resolve(`暂不支持粘贴的文件类型: ${item.type}，请通过文件接口发送`)
       return new Promise((resolve, reject) => {
         const blob = item.getAsFile()
         if (!blob)
