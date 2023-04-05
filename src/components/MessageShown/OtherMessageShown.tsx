@@ -42,6 +42,7 @@ const PortalForwardDetails: Component<{
         'shadow',
         'rounded',
         'p-4',
+        'of-y-auto',
       )}
       style={{
         background: 'var(--dlg-bg-color)',
@@ -56,7 +57,6 @@ const PortalForwardDetails: Component<{
           'i-teenyicons-x-solid',
           'text-2rem',
           'cursor-pointer',
-          'text-white',
           'hover:text-blue',
         ))}
         onClick={() => props.setShow(false)}
