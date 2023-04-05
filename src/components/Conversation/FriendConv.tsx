@@ -29,6 +29,7 @@ const FriendConv: Component<{
             'hover:text-blue',
             'cursor-pointer',
           )}
+          title="点击跳转到底部"
           onClick={() => {
             const e = el()
             if (e)

@@ -16,7 +16,8 @@ class CqWs {
   constructor(url: string) {
     this.ws = new WebSocket(url)
     this.ws.onerror = (ev) => {
-      setWarnings(p => [...p, { type: WarningType.Error, msg: String(ev) }])
+      setWarnings(p => [...p, { type: WarningType.Error, msg: 'WebSocket error! Please view the console.' }])
+      console.error(ev)
       setWs(undefined)
     }
     this.ws.onopen = () => {
