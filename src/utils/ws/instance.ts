@@ -68,12 +68,14 @@ function initWs(url: string) {
 
       pushPrivateConversation(data)
       addFriendStore(data)
+      console.log('friend', data)
       return
     }
 
     if (isGroup(data)) {
       pushGroupConversation(data)
       addGroupStore(data)
+      console.log('group', data)
       return
     }
 

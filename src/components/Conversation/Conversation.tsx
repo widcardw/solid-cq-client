@@ -106,7 +106,10 @@ const Conversation: Component<{
       return
     setLoading(true)
 
-    ws()?.m(curConvInstance.type, curConvInstance.id, await buildMsg((e.target as HTMLTextAreaElement).value))
+    const msgContent = await buildMsg((e.target as HTMLTextAreaElement).value)
+    console.log('sent', msgContent)
+
+    ws()?.m(curConvInstance.type, curConvInstance.id, msgContent)
   }
 
   const pasteImageHandler = async (e: TextareaElClipboardEvent) => {
