@@ -223,7 +223,7 @@ const Conversation: Component<{
             'leading-loose',
             'disabled:op-50',
           ])}
-          disabled={loading() || !curConv()}
+          disabled={ws() === undefined || loading() || !curConv()}
           onKeyDown={sendMessageHandler}
           onPaste={pasteImageHandler}
         />

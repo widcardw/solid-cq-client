@@ -15,6 +15,7 @@ const [ws, setWs] = createSignal<CqWs>()
 
 function initWs(url: string) {
   setWs(createWs(url))
+  setLoading(false)
   ws()?.listen((data: any) => {
     if (data.post_type === 'meta_event' || data.post_type === 'request')
       return
