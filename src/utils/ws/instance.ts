@@ -67,6 +67,18 @@ function initWs(url: string) {
       if (data.user_id === data.self_id)
         data.user_id = data.target_id
 
+      // Temporarily a solution for correcting the slice problem
+      if (data.post_type === 'message_sent') {
+        const msg = data.message
+        if (Array.isArray(msg)) {
+          if (msg[0].type === 'text')
+            msg[0].data.text = data.raw_message
+        }
+        else {
+          if (msg.type === 'text')
+            msg.data.text = data.raw_message
+        }
+      }
       pushPrivateConversation(data)
       addFriendStore(data)
       return

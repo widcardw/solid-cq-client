@@ -3,7 +3,7 @@ import type { CqReceivedMessage } from './sent-message-type'
 interface ReceivedPrivateMessage {
   time: number
   self_id: number
-  post_type: 'message' | 'request' | 'notice' | 'meta_event'
+  post_type: 'message' | 'request' | 'notice' | 'meta_event' | 'message_sent'
   message_type: 'private'
   sub_type: 'friend' | 'group' | 'group_self' | 'other'
   message_id: number
