@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import type { Component } from 'solid-js'
-import { For, createSignal } from 'solid-js'
+import { For, createSignal, onMount } from 'solid-js'
 import { FriendConvMessage } from './FriendConvMessage'
 import type { FriendConversation } from '~/utils/stores/lists'
 
@@ -12,6 +12,14 @@ const FriendConv: Component<{
   conv: FriendConversation
 }> = (props) => {
   const [el, setEl] = createSignal<HTMLDivElement>()
+  function toBottom() {
+    const e = el()
+    if (e)
+      e.scrollTo({ top: e.scrollHeight })
+  }
+  onMount(() => {
+    toBottom()
+  })
   return (
     <>
       <div class={clsx([
@@ -30,11 +38,7 @@ const FriendConv: Component<{
             'cursor-pointer',
           )}
           title="点击跳转到底部"
-          onClick={() => {
-            const e = el()
-            if (e)
-              e.scrollTo({ top: e.scrollHeight })
-          }}
+          onClick={toBottom}
         />
       </div>
       <div

@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import type { Component } from 'solid-js'
-import { For, Show, createSignal } from 'solid-js'
+import { For, Show, createSignal, onMount } from 'solid-js'
 import { Portal } from 'solid-js/web'
 import { GroupConvMessage } from './GroupConvMessage'
 import type { GroupConversation } from '~/utils/stores/lists'
@@ -11,65 +11,7 @@ import './icon.css'
 import type { GroupFile, GroupFileFolder } from '~/utils/api/group-fs'
 import { getFileUrl, getGroupRootFile } from '~/utils/api/group-fs'
 import { transformFileSize } from '~/utils/hook/fileSize'
-
-function suffixToIcon(suffix?: string): string {
-  switch (suffix) {
-    case 'pdf': {
-      return 'i-teenyicons-pdf-outline'
-    }
-    case 'jpg':
-    case 'JPG':
-    case 'jpeg':
-    case 'gif':
-    case 'png':
-    case 'webp':
-    case 'bmp': {
-      return 'i-teenyicons-image-document-outline'
-    }
-    case 'mp3':
-    case 'wav':
-    case 'ogg':
-    case 'flac': {
-      return 'i-teenyicons-audio-document-outline'
-    }
-    case 'mp4':
-    case 'avi':
-    case 'flv':
-    case 'mkv': {
-      return 'i-teenyicons-play-circle-outline'
-    }
-    case 'doc':
-    case 'docx': {
-      return 'i-teenyicons-ms-word-outline'
-    }
-    case 'ppt':
-    case 'pptx': {
-      return 'i-teenyicons-ms-powerpoint-outline'
-    }
-    case 'xls':
-    case 'xlsx':
-    case 'csv': {
-      return 'i-teenyicons-ms-excel-outline'
-    }
-    case 'txt': {
-      return 'i-teenyicons-text-solid'
-    }
-    case 'md': {
-      return 'i-teenyicons-markdown-outline'
-    }
-    case 'zip':
-    case 'rar':
-    case '7z': {
-      return 'i-teenyicons-zip-outline'
-    }
-    case 'apk': {
-      return 'i-teenyicons-android-outline'
-    }
-    default: {
-      return 'i-teenyicons-file-outline'
-    }
-  }
-}
+import { suffixToIcon } from '~/utils/hook/icon-map'
 
 const OneFileItem: Component<{
   group_id: number
@@ -128,6 +70,14 @@ const GroupConv: Component<{
 }> = (props) => {
   const [el, setEl] = createSignal<HTMLDivElement>()
   const [showFsList, setShowFsList] = createSignal(false)
+  function toBottom() {
+    const e = el()
+    if (e)
+      e.scrollTo({ top: e.scrollHeight })
+  }
+  onMount(() => {
+    toBottom()
+  })
   return (
     <>
       <div class={clsx([
@@ -159,11 +109,7 @@ const GroupConv: Component<{
             'cursor-pointer',
           )}
           title="点击跳转到底部"
-          onClick={() => {
-            const e = el()
-            if (e)
-              e.scrollTo({ top: e.scrollHeight })
-          }}
+          onClick={toBottom}
         />
       </div>
       <div
