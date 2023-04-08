@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import type { Component } from 'solid-js'
-import { For, createSignal, onMount } from 'solid-js'
+import { For, createEffect, createSignal } from 'solid-js'
 import { FriendConvMessage } from './FriendConvMessage'
 import type { FriendConversation } from '~/utils/stores/lists'
 
@@ -17,8 +17,9 @@ const FriendConv: Component<{
     if (e)
       e.scrollTo({ top: e.scrollHeight })
   }
-  onMount(() => {
-    toBottom()
+  createEffect(() => {
+    if (props.conv.id)
+      toBottom()
   })
   return (
     <>
@@ -43,7 +44,7 @@ const FriendConv: Component<{
       </div>
       <div
         ref={r => setEl(r)}
-        class={clsx('flex-1', 'of-y-auto', 'scroller', 'scroll-smooth')}
+        class={clsx('flex-1', 'of-y-auto', 'scroller')}
       >
         <For each={props.conv.list}>
           {item => (
