@@ -3,7 +3,7 @@ import type { Component } from 'solid-js'
 const TextMessageShown: Component<{
   text: string
 }> = (props) => {
-  return <>{props.text}</>
+  return <span class="whitespace-pre-wrap">{props.text}</span>
 }
 
 const AtMessageShown: Component<{

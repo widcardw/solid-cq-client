@@ -175,7 +175,6 @@ const GroupConv: Component<{
             <GroupConvMessage item={item} />
           )}
         </For>
-        <div id="conv-bottom"></div>
       </div>
       {/* group file list */}
       <Show when={showFsList()}>

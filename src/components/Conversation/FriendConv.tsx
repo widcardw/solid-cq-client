@@ -46,7 +46,6 @@ const FriendConv: Component<{
             <FriendConvMessage item={item} />
           )}
         </For>
-        <div id="conv-bottom"></div>
       </div>
     </>
   )
