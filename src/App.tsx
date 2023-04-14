@@ -49,7 +49,7 @@ const App: Component = () => {
         </div>
         <Show when={warnings().length}>
           <Portal mount={document.querySelector('body')!}>
-            <div class={clsx('absolute', 'right-8 bottom-2', 'mb-2 mr-2', 'max-w-200px', 'z-100')}>
+            <div class={clsx('absolute', 'right-8 bottom-2', 'mb-2 mr-2', 'max-w-25vw', 'z-100')}>
               <For each={warnings()}>
                 {(warning, i) => (
                   <div
@@ -58,10 +58,9 @@ const App: Component = () => {
                       background: 'var(--dlg-bg-color)',
                     }}
                   >
-                    <div class={ICONMAP[warning.type]} />
-                    <div>{warning.msg}</div>
+                    <div class={clsx(ICONMAP[warning.type])} />
+                    <div class={clsx('flex-1')}>{warning.msg}</div>
                     {warning.extra && <a href={warning.extra} target="_blank" download="file" referrerPolicy='no-referrer'>链接</a>}
-                    <div class='flex-1' />
                     <div
                       class={clsx('i-teenyicons-x-small-outline', 'hover:text-blue', 'cursor-pointer')}
                       onClick={() => {

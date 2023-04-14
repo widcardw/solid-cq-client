@@ -2,14 +2,23 @@ import clsx from 'clsx'
 import type { Component } from 'solid-js'
 import { Show, createSignal } from 'solid-js'
 import { Portal } from 'solid-js/web'
-import { useMagicKeys, whenever } from 'solidjs-use'
+import { onClickOutside, useMagicKeys, whenever } from 'solidjs-use'
+
+// type KeyboardDivEvent = KeyboardEvent & {
+//   currentTarget: HTMLDivElement
+//   target: Element
+// }
 
 const ZoomedImg: Component<{
   url: string
   setZoomImg: (v: boolean) => any
 }> = (props) => {
   const { escape } = useMagicKeys()
+  const [imgRef, setImgRef] = createSignal<HTMLImageElement>()
   whenever(escape, () => {
+    props.setZoomImg(false)
+  })
+  onClickOutside(imgRef, () => {
     props.setZoomImg(false)
   })
   return (
@@ -25,6 +34,7 @@ const ZoomedImg: Component<{
       )}
     >
       <img
+        ref={r => setImgRef(r)}
         src={props.url}
         class={clsx('max-w-90%', 'max-h-90%', 'shadow')}
         referrerPolicy="no-referrer"

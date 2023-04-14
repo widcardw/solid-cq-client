@@ -226,6 +226,7 @@ const Conversation: Component<{
           disabled={ws() === undefined || loading() || !curConv()}
           onKeyDown={sendMessageHandler}
           onPaste={pasteImageHandler}
+          autofocus={true}
         />
       </div>
     </div>
