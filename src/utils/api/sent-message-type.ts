@@ -75,6 +75,15 @@ interface CqRecordMessage extends CqMessageType {
   type: 'record'
   data: {
     file: string
+    url: string
+  }
+}
+
+interface CqVideoMessage extends CqMessageType {
+  type: 'video'
+  data: {
+    file: string
+    url: string
   }
 }
 
@@ -100,6 +109,7 @@ CqTextMessage
 | CqRecordMessage
 | CqForwardMessage
 | CqFileMessage
+| CqVideoMessage
 
 type CqReceivedMessage = MultiTypeReceivedMessage | MultiTypeReceivedMessage[]
 
@@ -161,6 +171,7 @@ export type {
   CqReceivedMessage,
   CqJsonCardMessage,
   MultiTypeReceivedMessage,
+  CqVideoMessage,
 }
 
 export {

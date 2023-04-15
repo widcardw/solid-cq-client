@@ -1,49 +1,58 @@
 import type { Component } from 'solid-js'
-import { For, Match, Show, Switch } from 'solid-js'
+import { For, Match, Show, Switch, createMemo } from 'solid-js'
 import { unAccessor } from 'solidjs-use'
 import { AtMessageShown, FaceMessageShown, ReplyMessageShown, TextMessageShown } from './TextMessageShown'
 import { ImageMessageShown } from './ImageMessageShown'
 import { JsonMessageShown } from './JsonMessageShown'
-import { ForwardMessageFolded, RecordMessageShown } from './OtherMessageShown'
+import { ForwardMessageFolded, RawMessageShown, RecordMessageShown, VideoMessageShown } from './OtherMessageShown'
 import { FileMessageShown } from './FileMessageShown'
-import type { CqAtMessage, CqFaceMessage, CqFileMessage, CqForwardMessage, CqImageMessage, CqJsonCardMessage, CqReceivedMessage, CqRecordMessage, CqTextMessage, MultiTypeReceivedMessage } from '~/utils/api/sent-message-type'
+import type { CqAtMessage, CqFaceMessage, CqFileMessage, CqForwardMessage, CqImageMessage, CqJsonCardMessage, CqReceivedMessage, CqRecordMessage, CqTextMessage, CqVideoMessage, MultiTypeReceivedMessage } from '~/utils/api/sent-message-type'
 
 const OnePieceOfMessage: Component<{
   msg: MultiTypeReceivedMessage
 }> = (props) => {
-  if (!['text', 'at', 'reply', 'image', 'json', 'face', 'record', 'forward', 'file'].includes(props.msg.type))
+  const isSupported = createMemo(() => ['text', 'at', 'reply', 'image', 'json', 'face', 'record', 'forward', 'file', 'video'].includes(props.msg.type))
+  if (!isSupported())
     console.warn('Not a valid message type. ', unAccessor(props.msg))
 
   return (
-    <Switch>
-      <Match when={props.msg.type === 'text'}>
-        <TextMessageShown text={(props.msg as CqTextMessage).data.text} />
-      </Match>
-      <Match when={props.msg.type === 'at'}>
-        <AtMessageShown qq={(props.msg as CqAtMessage).data.qq} />
-      </Match>
-      <Match when={props.msg.type === 'reply'}>
-        <ReplyMessageShown />
-      </Match>
-      <Match when={props.msg.type === 'face'}>
-        <FaceMessageShown id={(props.msg as CqFaceMessage).data.id} />
-      </Match>
-      <Match when={props.msg.type === 'image'}>
-        <ImageMessageShown url={(props.msg as CqImageMessage).data.url!} />
-      </Match>
-      <Match when={props.msg.type === 'json'}>
-        <JsonMessageShown data={(props.msg as CqJsonCardMessage).data.data} />
-      </Match>
-      <Match when={props.msg.type === 'record'}>
-        <RecordMessageShown file={(props.msg as CqRecordMessage).data.file} />
-      </Match>
-      <Match when={props.msg.type === 'forward'}>
-        <ForwardMessageFolded id={(props.msg as CqForwardMessage).data.id} details={(props.msg as CqForwardMessage).details} />
-      </Match>
-      <Match when={props.msg.type === 'file'}>
-        <FileMessageShown file={(props.msg as CqFileMessage)} />
-      </Match>
-    </Switch>
+    <Show
+      when={isSupported()}
+      fallback={<RawMessageShown msg={props.msg} />}
+    >
+      <Switch>
+        <Match when={props.msg.type === 'text'}>
+          <TextMessageShown text={(props.msg as CqTextMessage).data.text} />
+        </Match>
+        <Match when={props.msg.type === 'at'}>
+          <AtMessageShown qq={(props.msg as CqAtMessage).data.qq} />
+        </Match>
+        <Match when={props.msg.type === 'reply'}>
+          <ReplyMessageShown />
+        </Match>
+        <Match when={props.msg.type === 'face'}>
+          <FaceMessageShown id={(props.msg as CqFaceMessage).data.id} />
+        </Match>
+        <Match when={props.msg.type === 'image'}>
+          <ImageMessageShown url={(props.msg as CqImageMessage).data.url!} />
+        </Match>
+        <Match when={props.msg.type === 'json'}>
+          <JsonMessageShown data={(props.msg as CqJsonCardMessage).data.data} />
+        </Match>
+        <Match when={props.msg.type === 'record'}>
+          <RecordMessageShown file={(props.msg as CqRecordMessage).data.url} />
+        </Match>
+        <Match when={props.msg.type === 'forward'}>
+          <ForwardMessageFolded id={(props.msg as CqForwardMessage).data.id} details={(props.msg as CqForwardMessage).details} />
+        </Match>
+        <Match when={props.msg.type === 'file'}>
+          <FileMessageShown file={(props.msg as CqFileMessage)} />
+        </Match>
+        <Match when={props.msg.type === 'video'}>
+          <VideoMessageShown url={(props.msg as CqVideoMessage).data.url} />
+        </Match>
+      </Switch>
+    </Show>
   )
 }
 

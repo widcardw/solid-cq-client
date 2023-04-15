@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import type { Component } from 'solid-js'
-import { For, Show, createSignal } from 'solid-js'
+import { For, Show, createMemo, createSignal } from 'solid-js'
 import { Portal } from 'solid-js/web'
 // import { useMagicKeys, whenever } from 'solidjs-use'
 import { MessageShown } from './MessageShown'
@@ -8,15 +8,28 @@ import type { ReceivedForwardedMessage, ReceivedForwardedOneMessage } from '~/ut
 import { isCqReceivedMessage } from '~/utils/api/received-msg-types'
 import { forwardMap, setLastforwardId } from '~/utils/stores/lists'
 import { ws } from '~/utils/ws/instance'
-import type { CqReceivedMessage } from '~/utils/api/sent-message-type'
+import type { CqReceivedMessage, MultiTypeReceivedMessage } from '~/utils/api/sent-message-type'
 
 const RecordMessageShown: Component<{
   file: string
 }> = (props) => {
   return (
     <>
-      语音消息
-      <audio src={props.file} autoplay={false} />
+      <div><a href={props.file}>语音消息</a></div>
+      <audio src={props.file} autoplay={false} controls crossorigin="use-credentials" />
+    </>
+  )
+}
+
+const VideoMessageShown: Component<{
+  url: string
+}> = (props) => {
+  return (
+    <>
+      <div><a href={props.url} target='_blank'>视频消息</a></div>
+      <video autoplay={false} controls width="200px">
+        <source src={props.url} type="video/mp4" />
+      </video>
     </>
   )
 }
@@ -31,6 +44,25 @@ const RecursionForwardedMessageShown: Component<{
         {m => <ForwardedOneMessageShown msg={m} />}
       </For>
     </div>
+  )
+}
+
+const RawMessageShown: Component<{
+  msg: MultiTypeReceivedMessage
+}> = (props) => {
+  const content = createMemo(() => {
+    try {
+      return JSON.stringify(props.msg, null, 2)
+    }
+    catch (e) {
+      return props.msg.type
+    }
+  })
+  return (
+    <details>
+      <summary>不支持的消息类型</summary>
+      <div class={clsx('whitespace-pre-wrap', 'break-all')}>{content()}</div>
+    </details>
   )
 }
 
@@ -143,4 +175,6 @@ const ForwardMessageFolded: Component<{
 export {
   RecordMessageShown,
   ForwardMessageFolded,
+  RawMessageShown,
+  VideoMessageShown,
 }
