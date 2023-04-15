@@ -5,8 +5,10 @@ import { Portal } from 'solid-js/web'
 // import { useMagicKeys, whenever } from 'solidjs-use'
 import { MessageShown } from './MessageShown'
 import type { ReceivedForwardedMessage, ReceivedForwardedOneMessage } from '~/utils/api/received-msg-types'
+import { isCqReceivedMessage } from '~/utils/api/received-msg-types'
 import { forwardMap, setLastforwardId } from '~/utils/stores/lists'
 import { ws } from '~/utils/ws/instance'
+import type { CqReceivedMessage } from '~/utils/api/sent-message-type'
 
 const RecordMessageShown: Component<{
   file: string
@@ -19,13 +21,36 @@ const RecordMessageShown: Component<{
   )
 }
 
+const RecursionForwardedMessageShown: Component<{
+  msgs: ReceivedForwardedOneMessage[]
+}> = (props) => {
+  return (
+    <div class={clsx('ml-4', 'space-y-2')}>
+      <For each={props.msgs}>
+        {/* eslint-disable-next-line @typescript-eslint/no-use-before-define */}
+        {m => <ForwardedOneMessageShown msg={m} />}
+      </For>
+    </div>
+  )
+}
+
 const ForwardedOneMessageShown: Component<{
   msg: ReceivedForwardedOneMessage
 }> = (props) => {
   return (
     <div>
       <div class="text-purple-600">{props.msg.sender.nickname}</div>
-      <MessageShown msg={props.msg.content} />
+      <Show
+        when={isCqReceivedMessage(props.msg.content)}
+        fallback={(
+          <details>
+            <summary>合并转发</summary>
+            <RecursionForwardedMessageShown msgs={props.msg.content as ReceivedForwardedOneMessage[]} />
+          </details>
+        )}
+      >
+        <MessageShown msg={props.msg.content as CqReceivedMessage} />
+      </Show>
     </div>
   )
 }
@@ -34,10 +59,6 @@ const PortalForwardDetails: Component<{
   id: string
   setShow: (i: boolean) => any
 }> = (props) => {
-  // const { escape } = useMagicKeys()
-  // whenever(escape, () => {
-  //   props.setShow(false)
-  // })
   return (
     <div
       class={clsx(
@@ -51,7 +72,7 @@ const PortalForwardDetails: Component<{
     >
       <div
         class={clsx(
-          'max-w-80vw', 'max-h-90vh',
+          'w-80vw', 'h-80vh',
           'p-4', 'rounded',
           'of-y-auto',
           'space-y-2',
@@ -75,9 +96,14 @@ const PortalForwardDetails: Component<{
             onClick={() => props.setShow(false)}
           />
         </div>
-        <For each={forwardMap[props.id]?.messages}>
-          {m => <ForwardedOneMessageShown msg={m} />}
-        </For>
+        <Show
+          when={forwardMap[props.id]}
+          fallback={<>加载中……</>}
+        >
+          <For each={forwardMap[props.id]?.messages}>
+            {m => <ForwardedOneMessageShown msg={m} />}
+          </For>
+        </Show>
       </div>
     </div>
   )

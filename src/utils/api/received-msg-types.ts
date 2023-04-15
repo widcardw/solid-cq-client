@@ -74,12 +74,22 @@ interface ReceivedGroupRecall {
 }
 
 interface ReceivedForwardedOneMessage {
-  content: CqReceivedMessage
+  content: CqReceivedMessage | ReceivedForwardedOneMessage[]
   sender: {
     nickname: string
     user_id: number
   }
   time: number
+}
+
+function isCqReceivedMessage(obj: CqReceivedMessage | ReceivedForwardedOneMessage[]): obj is CqReceivedMessage {
+  if (!Array.isArray(obj))
+    return true
+  if (obj.length === 0)
+    return true
+  if (Object.hasOwn(obj[0], 'type'))
+    return true
+  return false
 }
 
 interface ReceivedForwardedMessage {
@@ -111,4 +121,5 @@ export {
   isPrivate,
   isGroup,
   isForwardedMessage,
+  isCqReceivedMessage,
 }
