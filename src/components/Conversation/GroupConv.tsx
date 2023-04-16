@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import type { Component } from 'solid-js'
-import { For, Show, createEffect, createSignal } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal } from 'solid-js'
 import { Portal } from 'solid-js/web'
 import { GroupConvMessage } from './GroupConvMessage'
 import type { GroupConversation } from '~/utils/stores/lists'
@@ -12,6 +12,8 @@ import type { GroupFile, GroupFileFolder } from '~/utils/api/group-fs'
 import { getFileUrl, getGroupRootFile } from '~/utils/api/group-fs'
 import { transformFileSize } from '~/utils/hook/fileSize'
 import { suffixToIcon } from '~/utils/hook/icon-map'
+import { ws } from '~/utils/ws/instance'
+import { WsGetApi } from '~/utils/ws/ws'
 
 const OneFileItem: Component<{
   group_id: number
@@ -28,9 +30,9 @@ const OneFileItem: Component<{
       )}
     >
       <div class={clsx(suffixToIcon(props.file.file_name.split('.').pop()))} />
-      <span>{props.file.file_name}</span>
-      <span class={clsx('text-gray')}>{transformFileSize(props.file.file_size)}</span>
-      <div class="flex-1" />
+      <span class={clsx('flex-1')}>{props.file.file_name}</span>
+      <span class={clsx('text-gray', 'w-6rem', 'of-hidden')}>{transformFileSize(props.file.file_size)}</span>
+      <span class={clsx('whitespace-nowrap', 'text-ellipsis', 'w-8rem', 'of-hidden')}>{props.file.uploader_name}</span>
       <div
         class={clsx('i-teenyicons-download-solid',
           'hover:text-blue',
@@ -45,9 +47,20 @@ const OneFileItem: Component<{
 }
 
 const OneFolderItem: Component<{
-  group_id: number
+  conv: GroupConversation
   folder: GroupFileFolder
+  prevName: string
 }> = (props) => {
+  const [showFsList, setShowFsList] = createSignal(false)
+  const getFolderHandler = () => {
+    if (!groupFsStore[props.folder.folder_id]) {
+      ws()?.get(WsGetApi.GroupFilesByFolder, {
+        group_id: props.conv.id,
+        folder_id: props.folder.folder_id,
+      }, `${WsGetApi.GroupFilesByFolder}#${props.folder.folder_id}`)
+    }
+    setShowFsList(true)
+  }
   return (
     <div
       class={clsx(
@@ -57,10 +70,65 @@ const OneFolderItem: Component<{
         'items-center',
         'space-x-2',
       )}
+      onClick={getFolderHandler}
     >
       <div class={clsx('i-teenyicons-folder-outline')} />
       <span>{props.folder.folder_name}</span>
-      <span>（烦内，ws 的消息只能从 listen 拿到，开摆了）</span>
+      <Show when={showFsList()}>
+        <Portal mount={document.querySelector('body')!}>
+          {/* eslint-disable-next-line @typescript-eslint/no-use-before-define */}
+          <PortaledFileViewer conv={props.conv} setShow={setShowFsList} folderId={props.folder.folder_id} prevName={props.prevName} />
+        </Portal>
+      </Show>
+    </div>
+  )
+}
+
+const PortaledFileViewer: Component<{
+  conv: GroupConversation
+  setShow: (v: boolean) => any
+  folderId?: number
+  prevName: string
+}> = (props) => {
+  const id = createMemo(() => props.folderId || props.conv.id)
+  return (
+    <div
+      class={clsx(
+        'absolute',
+        'top-12',
+        'bottom-12',
+        'left-12',
+        'right-12',
+        'z-2',
+        'shadow',
+        'rounded',
+        'p-4',
+        'of-y-auto',
+      )}
+      style={{
+        background: 'var(--dlg-bg-color)',
+      }}
+    >
+      <div class={clsx('flex items-center justify-between')}>
+        <div class="text-1.2rem">{props.prevName}</div>
+        <div
+          class={clsx(
+            'i-teenyicons-x-solid',
+            'cursor-pointer',
+            'hover:text-blue',
+            'top-2', 'right-2',
+          )}
+          onClick={() => props.setShow(false)}
+        />
+      </div>
+      <Show when={groupFsStore[id()]} fallback="加载中……">
+        <For each={groupFsStore[id()]?.folders}>
+          {folder => <OneFolderItem conv={props.conv} folder={folder} prevName={`${props.prevName} > ${folder.folder_name}`} />}
+        </For>
+        <For each={groupFsStore[id()]?.files}>
+          {file => <OneFileItem group_id={id()} file={file} />}
+        </For>
+      </Show>
     </div>
   )
 }
@@ -127,42 +195,7 @@ const GroupConv: Component<{
       {/* group file list */}
       <Show when={showFsList()}>
         <Portal mount={document.querySelector('body')!}>
-          <div
-            class={clsx(
-              'absolute',
-              'top-12',
-              'bottom-12',
-              'left-12',
-              'right-12',
-              'z-2',
-              'shadow',
-              'rounded',
-              'p-4',
-              'of-y-auto',
-            )}
-            style={{
-              background: 'var(--dlg-bg-color)',
-            }}
-          >
-            <div class={clsx('flex items-center justify-between')}>
-              <div class="text-1.2rem">群文件</div>
-              <div
-                class={clsx(
-                  'i-teenyicons-x-solid',
-                  'cursor-pointer',
-                  'hover:text-blue',
-                  'top-2', 'right-2',
-                )}
-                onClick={() => setShowFsList(false)}
-              />
-            </div>
-            <For each={groupFsStore[props.conv.id]?.files}>
-              {file => <OneFileItem group_id={props.conv.id} file={file} />}
-            </For>
-            <For each={groupFsStore[props.conv.id]?.folders}>
-              {folder => <OneFolderItem group_id={props.conv.id} folder={folder} />}
-            </For>
-          </div>
+          <PortaledFileViewer conv={props.conv} setShow={setShowFsList} prevName='群文件' />
         </Portal>
       </Show>
     </>

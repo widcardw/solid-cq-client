@@ -4,13 +4,14 @@ import { For, createMemo, createSignal } from 'solid-js'
 import { OneGroup } from '../Listed/OneGroup'
 import type { GroupType } from '~/utils/api/group-type'
 import { ws } from '~/utils/ws/instance'
+import { WsGetApi } from '~/utils/ws/ws'
 
 const GroupList: Component<{
   list: GroupType[]
   cls?: string
 }> = (props) => {
   if (props.list.length === 0)
-    ws()?.get('get_group_list')
+    ws()?.get(WsGetApi.GroupList)
   const [search, setSearch] = createSignal('')
   const listed = createMemo(() => {
     if (search().trim() === '')

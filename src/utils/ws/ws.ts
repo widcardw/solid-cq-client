@@ -9,6 +9,14 @@ enum MessageTarget {
 }
 
 type SendActions = 'send_private_msg' | 'send_group_msg' | 'upload_private_file' | 'upload_group_file' | 'get_msg' | 'delete_msg'
+enum WsGetApi {
+  FriendList = 'get_friend_list',
+  GroupList = 'get_group_list',
+  ForwardMsg = 'get_forward_msg',
+  GroupRootFiles = 'get_group_root_files',
+  GroupFileUrl = 'get_group_file_url',
+  GroupFilesByFolder = 'get_group_files_by_folder',
+}
 
 class CqWs {
   ws: WebSocket
@@ -22,8 +30,8 @@ class CqWs {
     }
     this.ws.onopen = () => {
       setWarnings(p => [...p, { type: WarningType.Info, msg: '已连接' }])
-      this.get('get_friend_list')
-      this.get('get_group_list')
+      this.get(WsGetApi.FriendList)
+      this.get(WsGetApi.GroupList)
     }
     this.ws.onclose = (ev) => {
       console.warn('WS closed', ev)
@@ -43,8 +51,8 @@ class CqWs {
     }
   }
 
-  get(action: string, params?: any) {
-    this.ws.send(JSON.stringify({ action, params }))
+  get(action: WsGetApi, params?: any, echo?: string) {
+    this.ws.send(JSON.stringify({ action, params, echo: echo || action }))
   }
 
   send(action: 'send_private_msg', params: PrivateMsgSentParams): void
@@ -53,8 +61,8 @@ class CqWs {
   send(action: 'upload_group_file', params: GroupFileSentParams): void
   send(action: 'get_msg', params: GetMsgParams): void
   send(action: 'delete_msg', params: DeleteMsgParams): void
-  send(action: SendActions, params: WsSentParams) {
-    this.ws.send(JSON.stringify({ action, params }))
+  send(action: SendActions, params: WsSentParams, echo?: string) {
+    this.ws.send(JSON.stringify({ action, params, echo }))
   }
 
   m(target: MessageTarget, id: number, msg: CqSentMessage) {
@@ -106,4 +114,5 @@ export {
   CqWs,
   createWs,
   MessageTarget,
+  WsGetApi,
 }

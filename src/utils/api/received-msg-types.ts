@@ -1,3 +1,4 @@
+import { WsGetApi } from '../ws/ws'
 import type { CqReceivedMessage } from './sent-message-type'
 
 interface ReceivedPrivateMessage {
@@ -108,6 +109,16 @@ function isForwardedMessage(obj: any): obj is ReceivedForwardedMessage {
   return obj && obj.messages && Array.isArray(obj.messages)
 }
 
+interface WrappedForwardedMessage {
+  status: string
+  data: ReceivedForwardedMessage
+  echo: WsGetApi.ForwardMsg
+}
+
+function isForwardedMessage2(obj: any): obj is WrappedForwardedMessage {
+  return obj && Object.hasOwn(obj, 'echo') && obj.echo === WsGetApi.ForwardMsg
+}
+
 export type {
   ReceivedPrivateMessage,
   ReceivedGroupMessage,
@@ -122,4 +133,5 @@ export {
   isGroup,
   isForwardedMessage,
   isCqReceivedMessage,
+  isForwardedMessage2,
 }

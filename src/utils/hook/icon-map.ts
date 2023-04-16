@@ -29,7 +29,8 @@ function suffixToIcon(suffix?: string): string {
     case 'mp4':
     case 'avi':
     case 'flv':
-    case 'mkv': {
+    case 'mkv':
+    case 'webm': {
       return 'i-teenyicons-play-circle-outline'
     }
     case 'doc':
@@ -58,6 +59,15 @@ function suffixToIcon(suffix?: string): string {
     }
     case 'apk': {
       return 'i-teenyicons-android-outline'
+    }
+    case 'py': {
+      return 'i-teenyicons:python-outline'
+    }
+    case 'js': {
+      return 'i-teenyicons:javascript-outline'
+    }
+    case 'ts': {
+      return 'i-teenyicons:typescript-outline'
     }
     default: {
       return 'i-teenyicons-file-outline'

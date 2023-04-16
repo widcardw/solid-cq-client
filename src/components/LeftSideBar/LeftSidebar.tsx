@@ -6,6 +6,7 @@ import { useStorage } from 'solidjs-use'
 import { ListState } from '~/utils/list-state'
 import { useConfirm } from '~/utils/hook/useConfirm'
 import { initWs, setWs, ws } from '~/utils/ws/instance'
+import { WsGetApi } from '~/utils/ws/ws'
 
 const LeftSidebar: Component<{
   cls?: string
@@ -27,7 +28,7 @@ const LeftSidebar: Component<{
         title="好友列表 双击刷新"
         onClick={() => props.onListStateChange(ListState.Contact)}
         onDblClick={() => {
-          ws()?.get('get_friend_list')
+          ws()?.get(WsGetApi.FriendList)
         }}
       />
       <div
@@ -35,7 +36,7 @@ const LeftSidebar: Component<{
         title="群列表 双击刷新"
         onClick={() => props.onListStateChange(ListState.Groups)}
         onDblClick={() => {
-          ws()?.get('get_group_list')
+          ws()?.get(WsGetApi.GroupList)
         }}
       />
       <div class='flex-1' />

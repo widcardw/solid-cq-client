@@ -1,4 +1,5 @@
 import { ws } from '../ws/instance'
+import { WsGetApi } from '../ws/ws'
 
 interface GroupFile {
   group_id: number
@@ -30,15 +31,19 @@ interface GroupFsList {
 }
 
 function getGroupRootFile(group_id: number) {
-  ws()?.get('get_group_root_files', { group_id })
+  ws()?.get(WsGetApi.GroupRootFiles, { group_id })
 }
 
 function isGroupRootFsListMessage(obj: any): obj is GroupFsList {
   return obj && Object.hasOwn(obj, 'files') && Object.hasOwn(obj, 'folders')
 }
 
+function getGroupFilesByFolder(group_id: number, folder_id: number) {
+  ws()?.get(WsGetApi.GroupFilesByFolder, { group_id, folder_id })
+}
+
 function getFileUrl(group_id: number, file_id: string, busid: number) {
-  ws()?.get('get_group_file_url', { group_id, file_id, busid })
+  ws()?.get(WsGetApi.GroupFileUrl, { group_id, file_id, busid })
 }
 
 function isSingleFileUrl(data: any): data is { url: string } {
@@ -56,4 +61,5 @@ export {
   isGroupRootFsListMessage,
   isSingleFileUrl,
   getFileUrl,
+  getGroupFilesByFolder,
 }

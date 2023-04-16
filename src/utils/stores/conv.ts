@@ -3,6 +3,7 @@ import type { GroupType } from '../api/group-type'
 import { isGroupType } from '../api/group-type'
 import { isGroup, isPrivate } from '../api/received-msg-types'
 import { ws } from '../ws/instance'
+import { WsGetApi } from '../ws/ws'
 import { groupList, recentConv, setRecentCov } from './lists'
 
 /**
@@ -41,7 +42,7 @@ function pushGroupConversation(data: any) {
       // ReceivedGroupMessage
       else {
         if (groupList().length === 0)
-          ws()?.get('get_group_list')
+          ws()?.get(WsGetApi.GroupList)
 
         name = groupList().find(i => i.group_id === data.group_id)?.group_name || `群 ${data.group_id}`
       }

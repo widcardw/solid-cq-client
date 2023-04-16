@@ -4,13 +4,14 @@ import clsx from 'clsx'
 import { OneFriend } from '../Listed/OneFriend'
 import type { FriendType } from '~/utils/api/friend-type'
 import { ws } from '~/utils/ws/instance'
+import { WsGetApi } from '~/utils/ws/ws'
 
 const ContactList: Component<{
   list: FriendType[]
   cls?: string
 }> = (props) => {
   if (props.list.length === 0)
-    ws()?.get('get_friend_list')
+    ws()?.get(WsGetApi.FriendList)
 
   const [search, setSearch] = createSignal('')
   const listed = createMemo(() => {

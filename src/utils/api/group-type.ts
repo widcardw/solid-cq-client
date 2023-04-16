@@ -1,3 +1,5 @@
+import { WsGetApi } from '../ws/ws'
+
 /**
  * no_cache 请求参数 默认为 false
  */
@@ -34,12 +36,22 @@ interface GroupType {
   max_member_count?: number
 }
 
+interface WrappedGroupListData {
+  status: string
+  data: GroupType[]
+  echo: WsGetApi.GroupList
+}
+
 function isGroupType(obj: any): obj is GroupType {
   return typeof obj === 'object' && Object.hasOwn(obj, 'group_id') && Object.hasOwn(obj, 'group_name')
 }
 
 function isGroupList(obj: any): obj is GroupType[] {
   return obj && Array.isArray(obj) && (obj.length === 0 || isGroupType(obj[0]))
+}
+
+function isGroupList2(obj: any): obj is WrappedGroupListData {
+  return obj && Object.hasOwn(obj, 'echo') && obj.echo === WsGetApi.GroupList
 }
 
 export type {
@@ -50,4 +62,5 @@ export {
   get_group_list_api,
   isGroupType,
   isGroupList,
+  isGroupList2,
 }

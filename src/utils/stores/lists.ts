@@ -48,7 +48,7 @@ const [loading, setLoading] = createSignal(false)
 const [warnings, setWarnings] = createSignal<WarningMessage[]>([])
 const [forwardMap, setForwardMap] = createStore<Record<string, ReceivedForwardedMessage>>({})
 const [lastForwardId, setLastforwardId] = createSignal('')
-const [groupFsStore, setGroupFsStore] = createStore<Record<number, GroupFsList>>({})
+const [groupFsStore, setGroupFsStore] = createStore<Record<string, GroupFsList>>({})
 
 export {
   friendList, setFriendList,

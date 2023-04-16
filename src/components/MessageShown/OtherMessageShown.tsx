@@ -9,6 +9,7 @@ import { isCqReceivedMessage } from '~/utils/api/received-msg-types'
 import { forwardMap, setLastforwardId } from '~/utils/stores/lists'
 import { ws } from '~/utils/ws/instance'
 import type { CqReceivedMessage, MultiTypeReceivedMessage } from '~/utils/api/sent-message-type'
+import { WsGetApi } from '~/utils/ws/ws'
 
 const RecordMessageShown: Component<{
   file: string
@@ -149,7 +150,7 @@ const ForwardMessageFolded: Component<{
   const viewDetailsHandler = () => {
     setLastforwardId(props.id)
     if (!forwardMap[props.id])
-      ws()?.get('get_forward_msg', { message_id: props.id })
+      ws()?.get(WsGetApi.ForwardMsg, { message_id: props.id })
     setShowDetails(true)
   }
   return (

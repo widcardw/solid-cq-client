@@ -1,3 +1,5 @@
+import { WsGetApi } from '../ws/ws'
+
 const get_friend_list_api = '/get_friend_list'
 
 interface FriendType {
@@ -23,6 +25,16 @@ function isFriendList(obj: any): obj is FriendType[] {
   return obj && Array.isArray(obj) && (obj.length === 0 || isFriendType(obj[0]))
 }
 
+interface WrappedFriendListData {
+  status: string
+  data: FriendType[]
+  echo: WsGetApi.FriendList
+}
+
+function isFriendList2(obj: any): obj is WrappedFriendListData {
+  return obj && Object.hasOwn(obj, 'echo') && obj.echo === WsGetApi.FriendList
+}
+
 export type {
   FriendType,
 }
@@ -31,4 +43,5 @@ export {
   get_friend_list_api,
   isFriendType,
   isFriendList,
+  isFriendList2,
 }
