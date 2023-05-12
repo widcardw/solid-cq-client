@@ -83,12 +83,12 @@ function initWs(url: string) {
 
     if (data.message === '' && data.retcode === 0 && data.status === 'ok') {
       if (data.data && Object.keys(data.data).length === 1 && typeof data.data.message_id === 'number') {
+        setLoading(false)
         const el = sendEl()
         if (el) {
           el.value = ''
           el.focus()
         }
-        setLoading(false)
 
         return
       }
