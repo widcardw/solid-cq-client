@@ -12,6 +12,7 @@ import { buildMsg } from '~/cq/build-msg'
 import type { CqImageMessage, CqSentMessage } from '~/utils/api/sent-message-type'
 import { createFileMessage, createImageMessage } from '~/utils/api/sent-message-type'
 import { u8tobase64 } from '~/utils/msg/transform-tex'
+import { sendByEnter } from '~/utils/stores/settings'
 
 type InputElKeyboardEvent = KeyboardEvent & {
   currentTarget: HTMLInputElement
@@ -75,8 +76,16 @@ const Conversation: Component<{
   }
 
   const uploadFileHandler = async (e: InputElKeyboardEvent) => {
-    if (!(e.ctrlKey === true && e.code === 'Enter'))
+    if (e.isComposing)
       return
+    if (sendByEnter()) {
+      if (e.code !== 'Enter')
+        return
+    }
+    else {
+      if (!(e.ctrlKey === true && e.code === 'Enter'))
+        return
+    }
     const path = (e.target as HTMLInputElement).value
     const curConvInstance = curConv()
     if (!curConvInstance)
@@ -86,11 +95,20 @@ const Conversation: Component<{
   }
 
   const sendMessageHandler = async (e: TextareaElKeyboardEvent) => {
+    if (e.isComposing)
+      return
     const curConvInstance = curConv()
     if (!curConvInstance)
       return
-    if (!(e.ctrlKey === true && e.code === 'Enter'))
-      return
+
+    if (sendByEnter()) {
+      if (e.code !== 'Enter')
+        return
+    }
+    else {
+      if (!(e.ctrlKey === true && e.code === 'Enter'))
+        return
+    }
 
     // If there is any pasted images, then send them first
     if (pastedImgs().length > 0) {
@@ -169,7 +187,7 @@ const Conversation: Component<{
         <Show when={showFile()}>
           <div class={clsx('flex')}>
             <input
-              placeholder='此处放入文件的绝对路径 Ctrl + Enter 发送'
+              placeholder={`此处放入文件的绝对路径 ${sendByEnter() ? '' : 'Ctrl + '}Enter 发送`}
               class={clsx('w-full', 'leading-loose', 'outline-none', 'border-none', 'border border-b-(solid zinc/20)')}
               onKeyDown={uploadFileHandler}
             />
@@ -213,7 +231,7 @@ const Conversation: Component<{
         </Show>
         <textarea
           ref={r => setSendEl(r)}
-          placeholder='Ctrl + Enter 发送文本'
+          placeholder={`${!sendByEnter() ? 'Ctrl + ' : ''}Enter 发送文本`}
           class={clsx([
             'border-none',
             'm-0 p-4',

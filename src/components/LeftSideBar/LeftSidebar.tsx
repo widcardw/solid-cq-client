@@ -7,6 +7,7 @@ import { ListState } from '~/utils/list-state'
 import { useConfirm } from '~/utils/hook/useConfirm'
 import { initWs, setWs, ws } from '~/utils/ws/instance'
 import { WsGetApi } from '~/utils/ws/ws'
+import { sendByEnter, setSendByEnter } from '~/utils/stores/settings'
 
 const LeftSidebar: Component<{
   cls?: string
@@ -63,30 +64,40 @@ const LeftSidebar: Component<{
       />
       <Show when={isRevealed()}>
         <Portal mount={document.querySelector('body')!}>
-          <div class="modal-layout shadow">
-            <strong>ws 链接</strong>
-            <div class="mt-1 mb-1">
+          <div class="modal-layout shadow space-y-2">
+            <div class="space-x-2">
+              <span>ws 链接</span>
               <input
                 ref={setEl}
                 value={wsUrl()}
                 class={clsx('w-200px leading-loose', 'outline-none', 'border border-(solid zinc/40)', 'rounded')}
               />
             </div>
-            <button
-              class="mr-2"
-              onClick={() => {
-                setWsUrl(el()!.value)
-                if (ws())
-                  ws()?.close()
-                initWs(wsUrl())
-                unreveal()
-              }}
-            >OK
-            </button>
-            <button
-              onClick={unreveal}
-            >Cancel
-            </button>
+            <div class="space-x-2">
+              <span>Enter 发送</span>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={sendByEnter()}
+                  onChange={e => setSendByEnter((e.target as HTMLInputElement).checked)}
+                />
+              </label>
+            </div>
+            <div class="space-x-2">
+              <button
+                onClick={() => {
+                  setWsUrl(el()!.value)
+                  // if (ws())
+                  //   ws()?.close()
+                  unreveal()
+                }}
+              >
+                OK
+              </button>
+              <button onClick={unreveal}>
+                Cancel
+              </button>
+            </div>
           </div>
         </Portal>
       </Show>
