@@ -14,7 +14,7 @@
     "@resvg/resvg-js": "^2.4.1",
     "@resvg/resvg-wasm": "^2.4.1",
     "@types/node": "^18.15.5",
-    "@widcardw/eslint-config": "^0.3.3",
+    "@widcardw/eslint-config": "^0.3.4",
     "asciimath-parser": "^0.5.8",
     "clsx": "^1.2.1",
     "eslint": "^8.36.0",

@@ -8,6 +8,7 @@ import { useConfirm } from '~/utils/hook/useConfirm'
 import { initWs, setWs, ws } from '~/utils/ws/instance'
 import { WsGetApi } from '~/utils/ws/ws'
 import { sendByEnter, setSendByEnter } from '~/utils/stores/settings'
+import { WarningType, setWarnings } from '~/utils/stores/lists'
 
 const LeftSidebar: Component<{
   cls?: string
@@ -74,21 +75,19 @@ const LeftSidebar: Component<{
               />
             </div>
             <div class="space-x-2">
-              <span>Enter 发送</span>
               <label>
                 <input
                   type="checkbox"
                   checked={sendByEnter()}
                   onChange={e => setSendByEnter((e.target as HTMLInputElement).checked)}
-                />
+                />{sendByEnter() ? 'Enter 发送' : 'Ctrl + Enter 发送'}
               </label>
             </div>
             <div class="space-x-2">
               <button
                 onClick={() => {
                   setWsUrl(el()!.value)
-                  // if (ws())
-                  //   ws()?.close()
+                  setWarnings(p => [...p, { type: WarningType.Info, msg: '若 WS 链接被更改，请点击左下角断开并重连' }])
                   unreveal()
                 }}
               >
