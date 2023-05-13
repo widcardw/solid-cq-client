@@ -5,7 +5,6 @@ import { Portal } from 'solid-js/web'
 import { MessageShown } from '../MessageShown/MessageShown'
 import type { ReceivedGroupMessage } from '~/utils/api/received-msg-types'
 import { useConfirm } from '~/utils/hook/useConfirm'
-// import { transformReceived } from '~/utils/msg/received-msg-transformer'
 import { sendEl } from '~/utils/stores/lists'
 import { recallGroupStore } from '~/utils/stores/store'
 import { ws } from '~/utils/ws/instance'
@@ -15,7 +14,7 @@ const GroupConvMessage: Component<{
 }> = (props) => {
   const { reveal, unreveal, isRevealed } = useConfirm()
   return (
-    <div class={clsx('m-2', 'one-msg')}>
+    <div class={clsx('m-2', 'one-msg')} id={props.item.message_id.toString()}>
       <div class="flex items-center space-x-2">
         <div class={clsx(
           props.item.self_id === props.item.sender.user_id ? 'text-green-6' : 'text-blue-6',
@@ -68,7 +67,6 @@ const GroupConvMessage: Component<{
           </Show>
         </Show>
       </div>
-      {/* <div class={clsx('break-all')} innerHTML={transformReceived(props.item.message)} /> */}
       <MessageShown msg={props.item.message} />
     </div>
   )

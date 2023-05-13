@@ -5,7 +5,6 @@ import { Portal } from 'solid-js/web'
 import { MessageShown } from '../MessageShown/MessageShown'
 import type { ReceivedPrivateMessage } from '~/utils/api/received-msg-types'
 import { useConfirm } from '~/utils/hook/useConfirm'
-// import { transformReceived } from '~/utils/msg/received-msg-transformer'
 import { sendEl } from '~/utils/stores/lists'
 import { recallFriendStore } from '~/utils/stores/store'
 import { ws } from '~/utils/ws/instance'
@@ -15,13 +14,16 @@ const FriendConvMessage: Component<{
 }> = (props) => {
   const { reveal, unreveal, isRevealed } = useConfirm()
   return (
-    <div class={clsx('m-2', 'one-msg')}>
+    <div class={clsx('m-2', 'one-msg')} id={props.item.message_id.toString()}>
       <div class="flex items-center space-x-2">
+        {/* 名字 */}
         <div class={clsx(
           props.item.self_id === props.item.sender.user_id ? 'text-green-6' : 'text-blue-6',
         )}
-        >{props.item.sender.nickname} {props.item.deleted && '[已撤回]'}
+        >
+          {props.item.sender.nickname} {props.item.deleted && '[已撤回]'}
         </div>
+        {/* 回复按钮 */}
         <div
           class={clsx('i-teenyicons-attach-outline', 'cursor-pointer', 'hover:text-blue', 'icon')}
           onClick={() => {
@@ -32,6 +34,7 @@ const FriendConvMessage: Component<{
               el.value = '[CQ:reply,id=' + props.item.message_id + ']' + el.value
           }}
         />
+        {/* @ 按钮 */}
         <div
           class={clsx('i-teenyicons-at-solid', 'cursor-pointer', 'hover:text-blue', 'icon')}
           onClick={() => {
@@ -42,6 +45,7 @@ const FriendConvMessage: Component<{
               el.value = el.value + '[CQ:at,qq=' + props.item.sender.user_id + ']'
           }}
         />
+        {/* 撤回 */}
         <Show when={props.item.self_id === props.item.sender.user_id && !props.item.deleted}>
           <div
             class={clsx('i-teenyicons-bin-outline', 'cursor-pointer', 'hover:text-red', 'icon')}
@@ -67,7 +71,7 @@ const FriendConvMessage: Component<{
           </Show>
         </Show>
       </div>
-      {/* <div class={clsx('break-all')} innerHTML={transformReceived(props.item.message)} /> */}
+      {/* 消息本体 */}
       <MessageShown msg={props.item.message} />
     </div>
   )

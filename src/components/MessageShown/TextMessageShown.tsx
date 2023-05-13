@@ -12,8 +12,10 @@ const AtMessageShown: Component<{
   return <>@{props.qq}</>
 }
 
-const ReplyMessageShown: Component = () => {
-  return <>[回复]</>
+const ReplyMessageShown: Component<{
+  id: number
+}> = (props) => {
+  return <a href={`#${props.id}`}>[回复]</a>
 }
 
 const FaceMessageShown: Component<{

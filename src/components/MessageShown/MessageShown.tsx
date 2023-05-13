@@ -6,7 +6,7 @@ import { ImageMessageShown } from './ImageMessageShown'
 import { JsonMessageShown } from './JsonMessageShown'
 import { ForwardMessageFolded, RawMessageShown, RecordMessageShown, VideoMessageShown } from './OtherMessageShown'
 import { FileMessageShown } from './FileMessageShown'
-import type { CqAtMessage, CqFaceMessage, CqFileMessage, CqForwardMessage, CqImageMessage, CqJsonCardMessage, CqReceivedMessage, CqRecordMessage, CqTextMessage, CqVideoMessage, MultiTypeReceivedMessage } from '~/utils/api/sent-message-type'
+import type { CqAtMessage, CqFaceMessage, CqFileMessage, CqForwardMessage, CqImageMessage, CqJsonCardMessage, CqReceivedMessage, CqRecordMessage, CqReplyMessage, CqTextMessage, CqVideoMessage, MultiTypeReceivedMessage } from '~/utils/api/sent-message-type'
 
 const OnePieceOfMessage: Component<{
   msg: MultiTypeReceivedMessage
@@ -28,7 +28,7 @@ const OnePieceOfMessage: Component<{
           <AtMessageShown qq={(props.msg as CqAtMessage).data.qq} />
         </Match>
         <Match when={props.msg.type === 'reply'}>
-          <ReplyMessageShown />
+          <ReplyMessageShown id={(props.msg as CqReplyMessage).data.id} />
         </Match>
         <Match when={props.msg.type === 'face'}>
           <FaceMessageShown id={(props.msg as CqFaceMessage).data.id} />
