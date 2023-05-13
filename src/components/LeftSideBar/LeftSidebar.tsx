@@ -8,7 +8,7 @@ import { useConfirm } from '~/utils/hook/useConfirm'
 import { initWs, setWs, ws } from '~/utils/ws/instance'
 import { WsGetApi } from '~/utils/ws/ws'
 import { sendByEnter, setSendByEnter } from '~/utils/stores/settings'
-import { WarningType, setWarnings } from '~/utils/stores/lists'
+import { WarningType, pushRightBottomMessage } from '~/utils/stores/lists'
 
 const LeftSidebar: Component<{
   cls?: string
@@ -87,7 +87,7 @@ const LeftSidebar: Component<{
               <button
                 onClick={() => {
                   setWsUrl(el()!.value)
-                  setWarnings(p => [...p, { type: WarningType.Info, msg: '若 WS 链接被更改，请点击左下角断开并重连' }])
+                  pushRightBottomMessage({ type: WarningType.Info, msg: '若 WS 链接被更改，请点击左下角断开并重连', ttl: 3000 })
                   unreveal()
                 }}
               >

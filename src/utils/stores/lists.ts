@@ -1,5 +1,6 @@
 import { createSignal } from 'solid-js'
 import { createStore } from 'solid-js/store'
+import { nanoid } from 'nanoid'
 import type { FriendType } from '../api/friend-type'
 import type { GroupType } from '../api/group-type'
 import type { ReceivedForwardedMessage, ReceivedGroupMessage, ReceivedPrivateMessage } from '../api/received-msg-types'
@@ -34,6 +35,8 @@ interface WarningMessage {
   type: WarningType
   msg: string
   extra?: string
+  ttl?: number
+  id: string
 }
 
 const [friendList, setFriendList] = createSignal<FriendType[]>([])
@@ -50,6 +53,15 @@ const [forwardMap, setForwardMap] = createStore<Record<string, ReceivedForwarded
 const [lastForwardId, setLastforwardId] = createSignal('')
 const [groupFsStore, setGroupFsStore] = createStore<Record<string, GroupFsList>>({})
 
+function pushRightBottomMessage(config: Omit<WarningMessage, 'id'>) {
+  const { ttl } = config
+  const id = nanoid()
+  setWarnings(p => [...p, { ...config, id }])
+  ttl && setTimeout(() => {
+    setWarnings(p => p.filter(i => i.id !== id))
+  }, ttl)
+}
+
 export {
   friendList, setFriendList,
   groupList, setGroupList,
@@ -65,6 +77,7 @@ export {
   lastForwardId, setLastforwardId,
   groupFsStore, setGroupFsStore,
   WarningType,
+  pushRightBottomMessage,
 }
 
 export type {
