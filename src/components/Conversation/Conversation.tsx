@@ -5,7 +5,7 @@ import { onStartTyping, useFileDialog } from 'solidjs-use'
 import { FriendConv } from './FriendConv'
 import { GroupConv } from './GroupConv'
 import type { Conversation as ConversationInterface, FriendConversation, GroupConversation } from '~/utils/stores/lists'
-import { curConv, loading, sendEl, setLoading, setSendEl } from '~/utils/stores/lists'
+import { WarningType, curConv, loading, pushRightBottomMessage, sendEl, setLoading, setSendEl } from '~/utils/stores/lists'
 import { ws } from '~/utils/ws/instance'
 import { MessageTarget } from '~/utils/ws/ws'
 import { buildMsg } from '~/cq/build-msg'
@@ -81,6 +81,8 @@ const Conversation: Component<{
     if (sendByEnter()) {
       if (e.code !== 'Enter')
         return
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey)
+        return
     }
     else {
       if (!(e.ctrlKey === true && e.code === 'Enter'))
@@ -92,6 +94,7 @@ const Conversation: Component<{
       return
     ws()?.f(curConvInstance.type, curConvInstance.id, createFileMessage(path))
     ;(e.target as HTMLInputElement).value = ''
+    pushRightBottomMessage({ type: WarningType.Info, msg: '文件已发送', ttl: 3000 })
   }
 
   const sendMessageHandler = async (e: TextareaElKeyboardEvent) => {
@@ -103,6 +106,8 @@ const Conversation: Component<{
 
     if (sendByEnter()) {
       if (e.code !== 'Enter')
+        return
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey)
         return
     }
     else {
@@ -184,6 +189,7 @@ const Conversation: Component<{
             onClick={toggleFilePathInput}
           />
         </div>
+        {/* 文件发送 */}
         <Show when={showFile()}>
           <div class={clsx('flex')}>
             <input
@@ -193,6 +199,7 @@ const Conversation: Component<{
             />
           </div>
         </Show>
+        {/* 图片发送 */}
         <Show when={files()?.length}>
           <div class={clsx('border border-b-(solid zinc/20)', 'break-all')}>
             <For each={files() && Array.from(files()!)}>
@@ -212,6 +219,7 @@ const Conversation: Component<{
             </span>
           </div>
         </Show>
+        {/* 粘贴图片 */}
         <Show when={pastedImgs().length}>
           <div class={clsx('border border-b-(solid zinc/20)', 'break-all')}>
             <span class="mr-2">Pasted {pastedImgs().length} images</span>
@@ -223,12 +231,13 @@ const Conversation: Component<{
             </span>
             <span
               class={clsx('text-red', 'underline', 'cursor-pointer')}
-              onClick={reset}
+              onClick={() => setPastedImgs([])}
             >
               Cancel
             </span>
           </div>
         </Show>
+        {/* 输入框 */}
         <textarea
           ref={r => setSendEl(r)}
           placeholder={`${!sendByEnter() ? 'Ctrl + ' : ''}Enter 发送文本`}
