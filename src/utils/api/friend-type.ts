@@ -21,6 +21,7 @@ function isFriendType(obj: any): obj is FriendType {
   return obj && typeof obj === 'object' && Object.hasOwn(obj, 'user_id') && Object.hasOwn(obj, 'nickname')
 }
 
+/** @deprecated */
 function isFriendList(obj: any): obj is FriendType[] {
   return obj && Array.isArray(obj) && (obj.length === 0 || isFriendType(obj[0]))
 }

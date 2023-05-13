@@ -1,14 +1,11 @@
 import { createSignal } from 'solid-js'
-import { isFriendList, isFriendList2 } from '../api/friend-type'
-import { isGroupList, isGroupList2 } from '../api/group-type'
-import { isForwardedMessage, isForwardedMessage2, isGroup, isPrivate } from '../api/received-msg-types'
+import { isGroup, isPrivate } from '../api/received-msg-types'
 import { pushGroupConversation, pushPrivateConversation } from '../stores/conv'
-import { WarningType, lastForwardId, sendEl, setForwardMap, setFriendList, setGroupFsStore, setGroupList, setLastforwardId, setLoading, setWarnings, warnings } from '../stores/lists'
+import { WarningType, lastForwardId, pushRightBottomMessage, sendEl, setForwardMap, setFriendList, setGroupFsStore, setGroupList, setLastforwardId, setLoading } from '../stores/lists'
 import { addFriendStore, addGroupStore, recallFriendStore, recallGroupStore } from '../stores/store'
 import { isGroupUploadFile, isOfflineFile, receivedGroupUploadHandler, receivedOfflineFileHandler } from '../api/notice'
 import { _createFileMessage } from '../api/sent-message-type'
 import type { GroupFsList } from '../api/group-fs'
-import { isGroupRootFsListMessage, isSingleFileUrl } from '../api/group-fs'
 import { WsGetApi, createWs } from './ws'
 import type { CqWs } from './ws'
 
@@ -65,7 +62,7 @@ function initWs(url: string) {
         }
         case WsGetApi.GroupFileUrl: {
           const url: string = data.data.url
-          setWarnings(p => [...p, { type: WarningType.Info, msg: '点击下载', extra: url }])
+          pushRightBottomMessage({ type: WarningType.Info, msg: '点击下载', extra: url })
           return
         }
         // case WsGetApi.GroupFilesByFolder: {

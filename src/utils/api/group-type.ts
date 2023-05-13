@@ -46,6 +46,7 @@ function isGroupType(obj: any): obj is GroupType {
   return typeof obj === 'object' && Object.hasOwn(obj, 'group_id') && Object.hasOwn(obj, 'group_name')
 }
 
+/** @deprecated */
 function isGroupList(obj: any): obj is GroupType[] {
   return obj && Array.isArray(obj) && (obj.length === 0 || isGroupType(obj[0]))
 }

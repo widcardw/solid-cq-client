@@ -1,5 +1,3 @@
-import { transformTex } from './transform-tex'
-
 const xssMap = {
   '&': '&amp;',
   '"': '&quot;',
@@ -23,18 +21,21 @@ function filterXss(str: string) {
   return str
 }
 
+/** @deprecated */
 function transformImg(msg: string) {
   return msg.replaceAll(/\[CQ:image,file=([^\]]+?),url=([^\]]+?)\]/g, (_match, _$1, $2) => {
     return `<img src=${$2} referrerPolicy="no-referrer" alt='图片' width='200px' />`
   })
 }
 
+/** @deprecated */
 function transformAt(msg: string) {
   return msg.replaceAll(/\[CQ:at,qq=([^\]]+)\]/g, (_m, $1) => {
     return ` @${$1} `
   })
 }
 
+/** @deprecated */
 function transformReply(msg: string) {
   return msg.replace(/\[CQ:reply,id=([^\]]+)\]/g, (_m, _$1) => {
     return '[回复]'
@@ -49,6 +50,7 @@ function transformJson(msg: string) {
   return msg
 }
 
+/** @deprecated */
 function transformReceived(msg: string) {
   return [
     transformSymbol,
