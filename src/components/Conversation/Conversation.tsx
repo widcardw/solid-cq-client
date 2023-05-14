@@ -188,6 +188,12 @@ const Conversation: Component<{
             title="macOS 使用 command + option + C 复制路径  Windows 使用 Shift + 右键复制路径"
             onClick={toggleFilePathInput}
           />
+          <div class="flex-1" />
+          <div
+            class={clsx('i-teenyicons-refresh-alt-outline', 'm-2', 'cursor-pointer', 'hover:text-blue')}
+            title="修复消息发送锁死"
+            onClick={() => setLoading(false)}
+          />
         </div>
         {/* 文件发送 */}
         <Show when={showFile()}>

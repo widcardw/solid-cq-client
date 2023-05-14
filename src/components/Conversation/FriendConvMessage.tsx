@@ -34,8 +34,8 @@ const FriendConvMessage: Component<{
               el.value = '[CQ:reply,id=' + props.item.message_id + ']' + el.value
           }}
         />
-        {/* @ 按钮 */}
-        <div
+        {/* @ 按钮，但实际上没有用 */}
+        {/* <div
           class={clsx('i-teenyicons-at-solid', 'cursor-pointer', 'hover:text-blue', 'icon')}
           onClick={() => {
             // template string concatenate may conflict with unocss
@@ -44,7 +44,7 @@ const FriendConvMessage: Component<{
             // eslint-disable-next-line prefer-template
               el.value = el.value + '[CQ:at,qq=' + props.item.sender.user_id + ']'
           }}
-        />
+        /> */}
         {/* 撤回 */}
         <Show when={props.item.self_id === props.item.sender.user_id && !props.item.deleted}>
           <div

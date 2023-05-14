@@ -133,6 +133,8 @@ function initWs(url: string) {
 
     // eslint-disable-next-line no-console
     console.log(data)
+    if (data && data.status === 'failed')
+      pushRightBottomMessage({ type: WarningType.Error, msg: '消息发送失败，详情请打开 console 查看' })
   })
 }
 
