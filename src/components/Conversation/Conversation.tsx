@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import type { Component } from 'solid-js'
 import { For, Match, Show, Switch, createSignal } from 'solid-js'
-import { onStartTyping, useFileDialog } from 'solidjs-use'
+import { onStartTyping, useFileDialog, useStorage } from 'solidjs-use'
 import { FriendConv } from './FriendConv'
 import { GroupConv } from './GroupConv'
 import type { Conversation as ConversationInterface, FriendConversation, GroupConversation } from '~/utils/stores/lists'
@@ -12,7 +12,6 @@ import { buildMsg } from '~/cq/build-msg'
 import type { CqImageMessage, CqSentMessage } from '~/utils/api/sent-message-type'
 import { createFileMessage, createImageMessage } from '~/utils/api/sent-message-type'
 import { u8tobase64 } from '~/utils/msg/transform-tex'
-import { sendByEnter } from '~/utils/stores/settings'
 
 type InputElKeyboardEvent = KeyboardEvent & {
   currentTarget: HTMLInputElement
@@ -36,6 +35,7 @@ const Conversation: Component<{
   const [showFile, setShowFile] = createSignal(false)
   const { files, open: openFileDlg, reset } = useFileDialog()
   const [pastedImgs, setPastedImgs] = createSignal<CqImageMessage[]>([])
+  const [sendByEnter] = useStorage('send-by-enter', false)
   onStartTyping(() => {
     sendEl()?.focus()
   })

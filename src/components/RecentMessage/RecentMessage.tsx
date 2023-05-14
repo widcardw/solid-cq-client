@@ -11,31 +11,29 @@ import type { GroupType } from '~/utils/api/group-type'
 import { isGroupType } from '~/utils/api/group-type'
 import { setFriendConvStore, setGroupConvStore, setRecentCov } from '~/utils/stores/lists'
 
-const [removeConvCache, setRemoveConvCache] = useStorage('remove-conv-cache', false)
-
-function removeFriendRecentConversation(id: number) {
-  setRecentCov(p => p.filter((i) => {
-    if (isFriendType(i))
-      return i.user_id !== id
-    return true
-  }))
-
-  removeConvCache() && setFriendConvStore(p => p.filter(i => i.id !== id))
-}
-
-function removeGroupRecentConversation(id: number) {
-  setRecentCov(p => p.filter((i) => {
-    if (isGroupType(i))
-      return i.group_id !== id
-    return true
-  }))
-
-  removeConvCache() && setGroupConvStore(p => p.filter(i => i.id !== id))
-}
-
 const Item: Component<{
   i: FriendType | GroupType
 }> = (props) => {
+  const [removeConvCache, setRemoveConvCache] = useStorage('remove-conv-cache', false)
+
+  function removeFriendRecentConversation(id: number) {
+    setRecentCov(p => p.filter((i) => {
+      if (isFriendType(i))
+        return i.user_id !== id
+      return true
+    }))
+    removeConvCache() && setFriendConvStore(p => p.filter(i => i.id !== id))
+  }
+
+  function removeGroupRecentConversation(id: number) {
+    setRecentCov(p => p.filter((i) => {
+      if (isGroupType(i))
+        return i.group_id !== id
+      return true
+    }))
+    removeConvCache() && setGroupConvStore(p => p.filter(i => i.id !== id))
+  }
+
   const remove = () => {
     if (isFriendType(props.i))
       removeFriendRecentConversation(props.i.user_id)

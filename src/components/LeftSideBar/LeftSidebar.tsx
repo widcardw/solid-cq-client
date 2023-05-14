@@ -7,7 +7,6 @@ import { ListState } from '~/utils/list-state'
 import { useConfirm } from '~/utils/hook/useConfirm'
 import { initWs, setWs, ws } from '~/utils/ws/instance'
 import { WsGetApi } from '~/utils/ws/ws'
-import { sendByEnter, setSendByEnter } from '~/utils/stores/settings'
 import { WarningType, pushRightBottomMessage } from '~/utils/stores/lists'
 
 const LeftSidebar: Component<{
@@ -17,6 +16,7 @@ const LeftSidebar: Component<{
 }> = (props) => {
   const { isRevealed, reveal, unreveal } = useConfirm()
   const [el, setEl] = createSignal<HTMLInputElement>()
+  const [sendByEnter, setSendByEnter] = useStorage('send-by-enter', false)
   const [wsUrl, setWsUrl] = useStorage('ws-url', 'ws://0.0.0.0:5700')
   return (
     <div class={clsx(props.cls, 'flex flex-col')}>
