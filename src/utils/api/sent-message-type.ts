@@ -95,7 +95,12 @@ interface CqForwardMessage extends CqMessageType {
   details?: ReceivedForwardedMessage
 }
 
-type MultiTypeSentMessage = CqTextMessage | CqReplyMessage | CqImageMessage | CqAtMessage
+interface CqMessageSegment extends CqMessageType {
+  type: string;
+  data: { [key: string]: string };
+}
+
+type MultiTypeSentMessage = CqTextMessage | CqMessageSegment | CqImageMessage | CqFileMessage
 
 type CqSentMessage = MultiTypeSentMessage | MultiTypeSentMessage[]
 
@@ -120,10 +125,10 @@ function createTextMessage(text: string): CqTextMessage {
   }
 }
 
-function createReplyMessage(id: number): CqReplyMessage {
+function createMessageSegment(type: string, data: { [key: string]: string }): CqMessageSegment {
   return {
-    type: 'reply',
-    data: { id },
+    type: type,
+    data: data,
   }
 }
 
@@ -176,7 +181,7 @@ export type {
 
 export {
   createTextMessage,
-  createReplyMessage,
+  createMessageSegment,
   createImageMessage,
   createFileMessage,
   createAtMessage,

@@ -1,9 +1,36 @@
-import type { CqSentMessage } from '~/utils/api/sent-message-type'
-import { createAtMessage, createReplyMessage, createTextMessage } from '~/utils/api/sent-message-type'
+import { CqSentMessage } from '~/utils/api/sent-message-type'
+import { createMessageSegment } from '~/utils/api/sent-message-type'
 import { transformTex } from '~/utils/msg/transform-tex'
 
-const ReplyPattern = /\[CQ:reply,id=([^\]]+)\]/
-const AtPattern = /\[CQ:at,qq=([^\]]+)\]/g
+function* _iter_message(msg: string): Generator<[string, string]> {
+  let text_begin = 0;
+  const regex = /\[CQ:([a-zA-Z0-9-_.]+)((?:,[a-zA-Z0-9-_.]+=[^,\]]*)*),?\]/g;
+  let match;
+  while ((match = regex.exec(msg))) {
+    yield ["text", msg.substring(text_begin, match.index)];
+    text_begin = match.index + match[0].length;
+    yield [match[1], match[2].replace(/^,/, "")];
+  }
+  yield ["text", msg.substring(text_begin)];
+}
+
+function* _construct(msg: string) {
+  for (const [type, data] of _iter_message(msg)) {
+    if (type === "text") {
+      if (data) {
+        yield createMessageSegment(type, { text: decodeURI(data) });
+      }
+    } else {
+      const parsedData: { [key: string]: string } = {};
+      const params = data.split(",").map((param) => param.trim());
+      for (const param of params) {
+        const [key, value] = param.split("=", 2);
+        parsedData[key] = decodeURI(value);
+      }
+      yield createMessageSegment(type, parsedData);
+    }
+  }
+}
 
 async function buildMsg(msg: string) {
   if (msg.startsWith('/tex') || msg.startsWith('/am'))
@@ -13,15 +40,9 @@ async function buildMsg(msg: string) {
 
 function transformReply(msg: string) {
   const sent: CqSentMessage = []
-  const restOfReply = msg.replace(ReplyPattern, (_m, $1) => {
-    sent.push(createReplyMessage(Number($1)))
-    return ''
-  })
-  const restOfAt = restOfReply.replace(AtPattern, (_m, $1) => {
-    sent.push(createAtMessage(Number($1)))
-    return ''
-  })
-  sent.push(createTextMessage(restOfAt))
+  for (const segment of _construct(msg)) {
+    sent.push(segment)
+  }
   return sent
 }
 
