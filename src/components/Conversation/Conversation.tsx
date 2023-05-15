@@ -12,6 +12,7 @@ import { buildMsg } from '~/cq/build-msg'
 import type { CqImageMessage, CqSentMessage } from '~/utils/api/sent-message-type'
 import { createFileMessage, createImageMessage } from '~/utils/api/sent-message-type'
 import { u8tobase64 } from '~/utils/msg/transform-tex'
+import { useResizer } from '~/utils/hook/useResizer'
 
 type InputElKeyboardEvent = KeyboardEvent & {
   currentTarget: HTMLInputElement
@@ -165,8 +166,10 @@ const Conversation: Component<{
       el.value += pasted.join('\n')
   }
 
+  const { size: inputFieldHeight, onResize: handleInputFieldResize } = useResizer()
+
   return (
-    <div class={clsx([props.cls, 'flex flex-col', 'h-100vh'])}>
+    <div class={clsx([props.cls, 'flex flex-col justify-between', 'h-100vh'])}>
       <div class={clsx(['flex flex-col', 'max-h-70vh', 'min-h-30vh'])}>
         <Switch>
           <Match when={props.conv?.type === MessageTarget.Private}>
@@ -177,7 +180,14 @@ const Conversation: Component<{
           </Match>
         </Switch>
       </div>
-      <div class={clsx(['flex flex-col', 'border border-t-solid border-t-zinc/40', 'flex-1'])}>
+      <div
+        class={clsx('flex flex-col flex-grow-0', 'border border-t-solid border-t-zinc/40', 'relative')}
+        style={{ height: `${inputFieldHeight()}px` }}
+      >
+        <div
+          class={clsx('h-1', 'cursor-row-resize', 'absolute', 'w-full', 'hover:bg-blue', 'translate-y--0.5', 'transition-colors')}
+          onMouseDown={handleInputFieldResize}
+        />
         <div class={clsx('flex', 'items-center', 'border border-b-(solid zinc/20)')}>
           <div
             class={clsx('i-teenyicons-image-alt-outline', 'm-2', 'cursor-pointer', 'hover:text-blue')}
