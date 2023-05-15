@@ -180,10 +180,14 @@ const Conversation: Component<{
           </Match>
         </Switch>
       </div>
-      <div class={clsx(['flex flex-col flex-grow-0', 'border border-t-solid border-t-zinc/40'])}
+      <div
+        class={clsx('flex flex-col flex-grow-0', 'border border-t-solid border-t-zinc/40', 'relative')}
         style={{ height: `${inputFieldHeight()}px` }}
       >
-        <div class={clsx(['h-1', 'cursor-row-resize'])} onMouseDown={handleInputFieldResize} />
+        <div
+          class={clsx('h-1', 'cursor-row-resize', 'absolute', 'w-full', 'hover:bg-blue', 'translate-y--0.5', 'transition-colors')}
+          onMouseDown={handleInputFieldResize}
+        />
         <div class={clsx('flex', 'items-center', 'border border-b-(solid zinc/20)')}>
           <div
             class={clsx('i-teenyicons-image-alt-outline', 'm-2', 'cursor-pointer', 'hover:text-blue')}
