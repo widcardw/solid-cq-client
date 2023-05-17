@@ -9,9 +9,8 @@ import { friendConvStore, groupConvStore, groupList, setFriendConvStore, setGrou
  */
 function addGroupStore(data: ReceivedGroupMessage) {
   let idx = groupConvStore.findIndex(i => i.id === data.group_id)
-  if (idx !== -1) {
+  if (idx !== -1)
     setGroupConvStore(idx, 'list', prev => [...prev, data])
-  }
   else {
     idx = groupConvStore.length
     setGroupConvStore(prev => [
@@ -28,6 +27,67 @@ function addGroupStore(data: ReceivedGroupMessage) {
     const group_name = groupList().find(i => i.group_id === group_id)?.group_name || '群'
     setGroupConvStore(idx, 'nick', group_name)
   }
+}
+
+/**
+ * Store the messages with this group in a global storage (not permanently).
+ * If the group label is clicked, then the current conversation will be set
+ * to the stored conversation.
+ * 
+ * @param data The messages to be stored. Must be from the same group and sorted by time in ascending order.
+ */
+function addGroupMessages(data: ReceivedGroupMessage[]) {
+  let idx = groupConvStore.findIndex(i => i.id === data[0].group_id)
+  if (idx === -1)
+  {
+    idx = groupConvStore.length
+    setGroupConvStore(prev => [
+      ...prev,
+      {
+        type: MessageTarget.Group,
+        id: data[0].group_id,
+        list: data,
+      },
+    ])
+    if (!groupConvStore[idx].nick) {
+      const group_id = data[0].group_id
+      const group_name = groupList().find(i => i.group_id === group_id)?.group_name || '群'
+      setGroupConvStore(idx, 'nick', group_name)
+    }
+    return
+  }
+  setGroupConvStore(idx, 'list', prev => {
+    const result = []
+    let i = 0, j = 0
+    while (i < prev.length && j < data.length) {
+      if (prev[i].time < data[j].time) {
+        result.push(prev[i])
+        i++
+      } else if (prev[i].time > data[j].time) {
+        result.push(data[j])
+        j++
+      } else {
+        if (prev[i].message_id !== data[j].message_id) {
+          result.push(prev[i])
+          result.push(data[j])
+        } else {
+          result.push(prev[i])
+        }
+        i++
+        j++
+      }
+    }
+
+    while (i < prev.length) {
+      result.push(prev[i])
+      i++
+    }
+    while (j < data.length) {
+      result.push(data[j])
+      j++
+    }
+    return result
+  })
 }
 
 /**
@@ -78,4 +138,5 @@ export {
   addGroupStore,
   recallFriendStore,
   recallGroupStore,
+  addGroupMessages,
 }

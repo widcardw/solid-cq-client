@@ -161,6 +161,20 @@ const GroupConv: Component<{
       >
         <div>{props.conv.nick} {props.conv.id}</div>
         <div class="flex-1" />
+        <div 
+          class={clsx(
+            'i-teenyicons-anti-clockwise-solid',
+            'hover:text-blue',
+            'cursor-pointer',
+          )}
+          onClick={() => {
+            const first = props.conv.list[0]?.message_seq
+            ws()?.get(WsGetApi.GroupMsgHistory, {
+              message_seq: first,
+              group_id: props.conv.id,
+            })
+          }}
+        />
         <div
           class={clsx(
             'i-teenyicons-folder-outline',

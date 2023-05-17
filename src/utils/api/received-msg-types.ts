@@ -52,6 +52,7 @@ interface ReceivedGroupMessage {
     flag: string
   }
   deleted?: boolean
+  message_seq?: number
 }
 
 interface ReceivedFriendRecall {

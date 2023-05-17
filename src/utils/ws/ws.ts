@@ -16,6 +16,7 @@ enum WsGetApi {
   GroupRootFiles = 'get_group_root_files',
   GroupFileUrl = 'get_group_file_url',
   GroupFilesByFolder = 'get_group_files_by_folder',
+  GroupMsgHistory = 'get_group_msg_history',
 }
 
 class CqWs {
