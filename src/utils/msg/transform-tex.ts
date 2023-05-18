@@ -10,7 +10,7 @@ import juice from 'juice/client'
 import { Resvg, initWasm } from '@resvg/resvg-wasm'
 import { AsciiMath } from 'asciimath-parser'
 import { createImageMessage } from '../api/sent-message-type'
-import { inited, setInited } from '../stores/lists'
+import { setWasmInited, wasmInited } from '../stores/semaphore'
 
 const am = new AsciiMath()
 
@@ -47,9 +47,9 @@ function addPadding(svg: string): string {
 async function svgToPng(svg: string) {
   svg = svg.match(/<svg(.*)<\/svg>/)![0]
   svg = addPadding(svg)
-  if (!inited()) {
+  if (!wasmInited()) {
     await initWasm(fetch('/index_bg.wasm'))
-    setInited(true)
+    setWasmInited(true)
   }
 
   const resvg = new Resvg(svg, {

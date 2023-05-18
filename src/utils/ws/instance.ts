@@ -2,11 +2,12 @@ import { createSignal } from 'solid-js'
 import type { ReceivedGroupMessage } from '../api/received-msg-types'
 import { isGroup, isPrivate } from '../api/received-msg-types'
 import { pushGroupConversation, pushPrivateConversation } from '../stores/conv'
-import { WarningType, lastForwardId, pushRightBottomMessage, sendEl, setForwardMap, setFriendList, setGroupFsStore, setGroupList, setLastforwardId, setLoading } from '../stores/lists'
-import { addFriendStore, addGroupStore, recallFriendStore, recallGroupStore, addGroupMessages } from '../stores/store'
+import { WarningType, lastForwardId, pushRightBottomMessage, sendEl, setForwardMap, setFriendList, setGroupFsStore, setGroupList, setLastforwardId } from '../stores/lists'
+import { addFriendStore, addGroupMessages, addGroupStore, recallFriendStore, recallGroupStore } from '../stores/store'
 import { isGroupUploadFile, isOfflineFile, receivedGroupUploadHandler, receivedOfflineFileHandler } from '../api/notice'
 import { _createFileMessage } from '../api/sent-message-type'
 import type { GroupFsList } from '../api/group-fs'
+import { setConvLoading } from '../stores/semaphore'
 import { WsGetApi, createWs } from './ws'
 import type { CqWs } from './ws'
 
@@ -14,7 +15,7 @@ const [ws, setWs] = createSignal<CqWs>()
 
 function initWs(url: string) {
   setWs(createWs(url))
-  setLoading(false)
+  setConvLoading(false)
   ws()?.listen((data: any) => {
     if (data.post_type === 'meta_event' || data.post_type === 'request')
       return
@@ -85,7 +86,7 @@ function initWs(url: string) {
 
     if (data.message === '' && data.retcode === 0 && data.status === 'ok') {
       if (data.data && Object.keys(data.data).length === 1 && typeof data.data.message_id === 'number') {
-        setLoading(false)
+        setConvLoading(false)
         const el = sendEl()
         if (el) {
           el.value = ''

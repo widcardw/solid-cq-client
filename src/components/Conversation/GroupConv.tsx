@@ -161,7 +161,7 @@ const GroupConv: Component<{
       >
         <div>{props.conv.nick} {props.conv.id}</div>
         <div class="flex-1" />
-        <div 
+        <div
           class={clsx(
             'i-teenyicons-anti-clockwise-solid',
             'hover:text-blue',

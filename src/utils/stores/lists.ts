@@ -46,8 +46,6 @@ const [groupConvStore, setGroupConvStore] = createStore<GroupConversation[]>([])
 const [friendConvStore, setFriendConvStore] = createStore<FriendConversation[]>([])
 const [curConv, setCurConv] = createSignal<Conversation | undefined>()
 const [sendEl, setSendEl] = createSignal<HTMLTextAreaElement>()
-const [inited, setInited] = createSignal(false)
-const [loading, setLoading] = createSignal(false)
 const [warnings, setWarnings] = createSignal<WarningMessage[]>([])
 const [forwardMap, setForwardMap] = createStore<Record<string, ReceivedForwardedMessage>>({})
 const [lastForwardId, setLastforwardId] = createSignal('')
@@ -70,8 +68,6 @@ export {
   friendConvStore, setFriendConvStore,
   curConv, setCurConv,
   sendEl, setSendEl,
-  inited, setInited,
-  loading, setLoading,
   warnings, setWarnings,
   forwardMap, setForwardMap,
   lastForwardId, setLastforwardId,

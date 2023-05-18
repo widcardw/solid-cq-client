@@ -5,7 +5,7 @@ import { onStartTyping, useFileDialog, useStorage } from 'solidjs-use'
 import { FriendConv } from './FriendConv'
 import { GroupConv } from './GroupConv'
 import type { Conversation as ConversationInterface, FriendConversation, GroupConversation } from '~/utils/stores/lists'
-import { WarningType, curConv, loading, pushRightBottomMessage, sendEl, setLoading, setSendEl } from '~/utils/stores/lists'
+import { WarningType, curConv, pushRightBottomMessage, sendEl, setSendEl } from '~/utils/stores/lists'
 import { ws } from '~/utils/ws/instance'
 import { MessageTarget } from '~/utils/ws/ws'
 import { buildMsg } from '~/cq/build-msg'
@@ -13,6 +13,7 @@ import type { CqImageMessage, CqSentMessage } from '~/utils/api/sent-message-typ
 import { createFileMessage, createImageMessage } from '~/utils/api/sent-message-type'
 import { u8tobase64 } from '~/utils/msg/transform-tex'
 import { useResizer } from '~/utils/hook/useResizer'
+import { convLoading, setConvLoading } from '~/utils/stores/semaphore'
 
 type InputElKeyboardEvent = KeyboardEvent & {
   currentTarget: HTMLInputElement
@@ -126,9 +127,9 @@ const Conversation: Component<{
     if ((e.target as HTMLTextAreaElement).value.trim() === '')
       return
 
-    if (loading())
+    if (convLoading())
       return
-    setLoading(true)
+    setConvLoading(true)
 
     ws()?.m(curConvInstance.type, curConvInstance.id, await buildMsg((e.target as HTMLTextAreaElement).value))
   }
@@ -202,7 +203,7 @@ const Conversation: Component<{
           <div
             class={clsx('i-teenyicons-refresh-alt-outline', 'm-2', 'cursor-pointer', 'hover:text-blue')}
             title="修复消息发送锁死"
-            onClick={() => setLoading(false)}
+            onClick={() => setConvLoading(false)}
           />
         </div>
         {/* 文件发送 */}
@@ -266,7 +267,7 @@ const Conversation: Component<{
             'leading-loose',
             'disabled:op-50',
           ])}
-          disabled={ws() === undefined || loading() || !curConv()}
+          disabled={ws() === undefined || convLoading() || !curConv()}
           onKeyDown={sendMessageHandler}
           onPaste={pasteImageHandler}
           autofocus={true}
