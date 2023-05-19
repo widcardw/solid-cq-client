@@ -13,11 +13,12 @@ const GroupConvMessage: Component<{
   item: ReceivedGroupMessage
 }> = (props) => {
   const { reveal, unreveal, isRevealed } = useConfirm()
+  const isSelf = props.item.self_id === props.item.sender.user_id
   return (
     <div class={clsx('m-2', 'one-msg')} id={props.item.message_id.toString()}>
-      <div class="flex items-center space-x-2">
+      <div class={clsx('flex items-center space-x-2', { 'flex-row-reverse': isSelf })}>
         <div class={clsx(
-          props.item.self_id === props.item.sender.user_id ? 'text-green-6' : 'text-blue-6',
+          isSelf ? 'text-green-6' : 'text-blue-6',
         )}
         >
           [{props.item.sender.role}] {props.item.sender.card || props.item.sender.nickname} {props.item.deleted && '[已撤回]'}
@@ -42,7 +43,7 @@ const GroupConvMessage: Component<{
               el.value = el.value + '[CQ:at,qq=' + props.item.sender.user_id + ']'
           }}
         />
-        <Show when={props.item.self_id === props.item.sender.user_id}>
+        <Show when={isSelf}>
           <div
             class={clsx('i-teenyicons-bin-outline', 'cursor-pointer', 'hover:text-red', 'icon')}
             onClick={reveal}
@@ -67,7 +68,7 @@ const GroupConvMessage: Component<{
           </Show>
         </Show>
       </div>
-      <MessageShown msg={props.item.message} />
+      <MessageShown msg={props.item.message} isSelf={isSelf} />
     </div>
   )
 }
