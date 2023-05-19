@@ -64,12 +64,19 @@ const MessageShown: Component<{
   return (
     <div class={clsx('relative', { 'scale-x--100': props.isSelf })}>
       {/* 气泡前面的装饰性圆弧 */}
-      <div class="absolute w-21px h-26px overflow-hidden">
-        <div class="absolute left-9px top--18px w-44px h-42px border-rd-50% bg-#333" />
+      {/* <div class="absolute w-21px h-26px overflow-hidden">
+        <div class="absolute left-9px top--18px w-44px h-42px border-rd-50%" style={{ background: 'var(--bubble-bg-color)' }} />
         <div class="absolute left-4px top--48px w-60px h-60px border-rd-50%" style={{ background: 'var(--bg-color)' }} />
-      </div>
+      </div> */}
       {/* 气泡主体 */}
-      <div class={clsx('break-all mt-10px ml-20px px-16px py-10px border-rd-4 bg-#333 max-w-max', { 'scale-x--100': props.isSelf })}>
+      {/* <div
+        class={clsx('break-all mt-10px ml-20px px-16px py-10px border-rd-4 max-w-max', { 'scale-x--100': props.isSelf })}
+        style={{ background: 'var(--bubble-bg-color)' }}
+      > */}
+      <div
+        class={clsx('break-all mt-10px ml-4px px-16px py-10px border-rd-4 max-w-max', { 'scale-x--100': props.isSelf })}
+        style={{ background: 'var(--bubble-bg-color)' }}
+      >
         <Show
           when={Array.isArray(props.msg)}
           fallback={<OnePieceOfMessage msg={props.msg as MultiTypeReceivedMessage} />}

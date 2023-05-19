@@ -9,6 +9,14 @@ import { sendEl } from '~/utils/stores/lists'
 import { recallGroupStore } from '~/utils/stores/store'
 import { ws } from '~/utils/ws/instance'
 
+function roleToColor(role: string) {
+  switch (role) {
+    case 'owner': return 'text-amber'
+    case 'admin': return 'text-green-6'
+    default: return 'text-blue-6'
+  }
+}
+
 const GroupConvMessage: Component<{
   item: ReceivedGroupMessage
 }> = (props) => {
@@ -17,11 +25,8 @@ const GroupConvMessage: Component<{
   return (
     <div class={clsx('m-2', 'one-msg')} id={props.item.message_id.toString()}>
       <div class={clsx('flex items-center space-x-2', { 'flex-row-reverse': isSelf })}>
-        <div class={clsx(
-          isSelf ? 'text-green-6' : 'text-blue-6',
-        )}
-        >
-          [{props.item.sender.role}] {props.item.sender.card || props.item.sender.nickname} {props.item.deleted && '[已撤回]'}
+        <div>
+          <span class={roleToColor(props.item.sender.role)}>[{props.item.sender.role}]</span> {props.item.sender.card || props.item.sender.nickname} {props.item.deleted && '[已撤回]'}
         </div>
         <div
           class={clsx('i-teenyicons-attach-outline', 'cursor-pointer', 'hover:text-blue', 'icon')}
