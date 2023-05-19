@@ -44,6 +44,9 @@ const transformLink = (text: string) => {
     lastIdx = match.index + url.length
   }
 
+  if (lastIdx < text.length)
+    pipeline.push({ type: 'text', content: text.slice(lastIdx) })
+
   if (flag === true)
     return buildPipeline({ pipeline })
 
