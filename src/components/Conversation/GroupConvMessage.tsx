@@ -30,6 +30,7 @@ const GroupConvMessage: Component<{
         </div>
         <div
           class={clsx('i-teenyicons-attach-outline', 'cursor-pointer', 'hover:text-blue', 'icon')}
+          title="回复"
           onClick={() => {
             // template string concatenate may conflict with unocss
             const el = sendEl()
@@ -40,6 +41,7 @@ const GroupConvMessage: Component<{
         />
         <div
           class={clsx('i-teenyicons-at-solid', 'cursor-pointer', 'hover:text-blue', 'icon')}
+          title="At"
           onClick={() => {
             // template string concatenate may conflict with unocss
             const el = sendEl()
@@ -72,6 +74,7 @@ const GroupConvMessage: Component<{
             </Portal>
           </Show>
         </Show>
+        <div class={clsx('icon')}>{new Date(props.item.time * 1000).toLocaleString()}</div>
       </div>
       <MessageShown msg={props.item.message} isSelf={isSelf} />
     </div>
