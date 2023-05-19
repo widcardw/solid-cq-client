@@ -1,4 +1,6 @@
+import clsx from 'clsx'
 import type { Component } from 'solid-js'
+import { Show } from 'solid-js'
 import { transformLink } from '~/utils/hook/transformLink'
 
 const TextMessageShown: Component<{
@@ -22,7 +24,15 @@ const ReplyMessageShown: Component<{
 const FaceMessageShown: Component<{
   id: number
 }> = (props) => {
-  return <>[表情 {props.id}]</>
+  return (
+    <Show when={props.id <= 221} fallback={`[表情${props.id}]`}>
+      <img
+        class={clsx('inline-flex', 'h-24px')}
+        src={`https://cdn.widcard.win/assets/cq-face/${props.id}.png`}
+        alt={`[表情${props.id}]`}
+      />
+    </Show>
+  )
 }
 
 export {
