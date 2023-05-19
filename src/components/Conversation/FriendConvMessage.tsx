@@ -13,9 +13,10 @@ const FriendConvMessage: Component<{
   item: ReceivedPrivateMessage
 }> = (props) => {
   const { reveal, unreveal, isRevealed } = useConfirm()
+  const isSelf = props.item.self_id === props.item.sender.user_id
   return (
     <div class={clsx('m-2', 'one-msg')} id={props.item.message_id.toString()}>
-      <div class="flex items-center space-x-2">
+      <div class={clsx('flex items-center space-x-2', { 'flex-row-reverse': isSelf })}>
         {/* 名字 */}
         <div class={clsx(
           props.item.self_id === props.item.sender.user_id ? 'text-green-6' : 'text-blue-6',
@@ -72,7 +73,7 @@ const FriendConvMessage: Component<{
         </Show>
       </div>
       {/* 消息本体 */}
-      <MessageShown msg={props.item.message} />
+      <MessageShown msg={props.item.message} isSelf={props.item.sender.user_id === props.item.self_id} />
     </div>
   )
 }

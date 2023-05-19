@@ -82,7 +82,7 @@ const ForwardedOneMessageShown: Component<{
           </details>
         )}
       >
-        <MessageShown msg={props.msg.content as CqReceivedMessage} />
+        <MessageShown msg={props.msg.content as CqReceivedMessage} isSelf={false} />
       </Show>
     </div>
   )
