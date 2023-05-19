@@ -3,7 +3,7 @@ import type { ReceivedGroupMessage } from '../api/received-msg-types'
 import { isGroup, isPrivate } from '../api/received-msg-types'
 import { pushGroupConversation, pushPrivateConversation } from '../stores/conv'
 import { WarningType, lastForwardId, pushRightBottomMessage, sendEl, setForwardMap, setFriendList, setGroupFsStore, setGroupList, setLastforwardId } from '../stores/lists'
-import { addFriendStore, addGroupMessages, addGroupStore, recallFriendStore, recallGroupStore } from '../stores/store'
+import { addFriendStore, addGroupMemberCard, addGroupMessages, addGroupStore, recallFriendStore, recallGroupStore } from '../stores/store'
 import { isGroupUploadFile, isOfflineFile, receivedGroupUploadHandler, receivedOfflineFileHandler } from '../api/notice'
 import { _createFileMessage } from '../api/sent-message-type'
 import type { GroupFsList } from '../api/group-fs'
@@ -120,6 +120,7 @@ function initWs(url: string) {
     if (isGroup(data)) {
       pushGroupConversation(data)
       addGroupStore(data)
+      addGroupMemberCard(data)
       return
     }
 
