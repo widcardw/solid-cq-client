@@ -1,9 +1,10 @@
 import type { Component } from 'solid-js'
+import { transformLink } from '~/utils/hook/transformLink'
 
 const TextMessageShown: Component<{
   text: string
 }> = (props) => {
-  return <span class="whitespace-pre-wrap">{props.text}</span>
+  return <span class="whitespace-pre-wrap">{transformLink(props.text)}</span>
 }
 
 const AtMessageShown: Component<{
