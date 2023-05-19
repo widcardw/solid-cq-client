@@ -2,7 +2,7 @@ import type { Component } from 'solid-js'
 import { Match, Switch } from 'solid-js'
 import { For } from 'solid-js/web'
 
-const REGEXP = /(https?\:\/\/)?(www\.)?([a-zA-Z0-9\-]+\.){1,}[a-zA-Z]{2,}(\/[\w\-\.\/?%&=]*)?/g
+const REGEXP = /(https?:\/\/)([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.\-\[\]\/?%~&=@]*)*\/?/g
 
 interface Item {
   type: 'link' | 'text'
@@ -43,6 +43,9 @@ const transformLink = (text: string) => {
     pipeline.push({ type: 'link', content: url })
     lastIdx = match.index + url.length
   }
+  const last = text.slice(lastIdx)
+  if (last)
+    pipeline.push({ type: 'text', content: last })
 
   if (flag === true)
     return buildPipeline({ pipeline })
