@@ -1,8 +1,8 @@
 import clsx from 'clsx'
 import type { Component } from 'solid-js'
-import { For, Match, Show, Switch, createSignal } from 'solid-js'
+import { For, Match, Show, Switch, createEffect } from 'solid-js'
 import { Portal } from 'solid-js/web'
-import { useStorage } from 'solidjs-use'
+import { useMagicKeys, useStorage } from 'solidjs-use'
 import { OneFriend } from '../Listed/OneFriend'
 import { OneGroup } from '../Listed/OneGroup'
 import type { FriendType } from '~/utils/api/friend-type'
@@ -10,6 +10,7 @@ import { isFriendType } from '~/utils/api/friend-type'
 import type { GroupType } from '~/utils/api/group-type'
 import { isGroupType } from '~/utils/api/group-type'
 import { setFriendConvStore, setGroupConvStore, setRecentCov } from '~/utils/stores/lists'
+import { useConfirm } from '~/utils/hook/useConfirm'
 
 const Item: Component<{
   i: FriendType | GroupType
@@ -42,11 +43,15 @@ const Item: Component<{
       removeGroupRecentConversation(props.i.group_id)
   }
 
-  const [removeDlg, setRemoveDlg] = createSignal(false)
+  const { isRevealed, reveal, unreveal } = useConfirm()
+  const { escape } = useMagicKeys()
+  createEffect(() => {
+    if (isRevealed() && escape())
+      unreveal()
+  })
+
   return (
-    <div
-      onContextMenu={() => setRemoveDlg(true)}
-    >
+    <div onContextMenu={reveal}>
       <Switch>
         <Match when={isFriendType(props.i)}>
           <OneFriend friend={props.i as FriendType} />
@@ -55,7 +60,7 @@ const Item: Component<{
           <OneGroup group={props.i as GroupType} />
         </Match>
       </Switch>
-      <Show when={removeDlg()}>
+      <Show when={isRevealed()}>
         <Portal>
           <div class={clsx('modal-layout shadow space-y-2')}>
             <div>确定移除这个会话吗？</div>
@@ -73,12 +78,12 @@ const Item: Component<{
               <button
                 onClick={() => {
                   remove()
-                  setRemoveDlg(false)
+                  unreveal()
                 }}
               >
                 Confirm
               </button>
-              <button onClick={() => setRemoveDlg(false)}>Cancel</button>
+              <button onClick={unreveal}>Cancel</button>
             </div>
           </div>
         </Portal>

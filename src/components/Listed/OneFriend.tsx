@@ -10,7 +10,7 @@ const OneFriend: Component<{
 }> = (props) => {
   return (
     <div
-      class={clsx(['border border-b-solid border-b-zinc/20', 'px-2 py-1', 'cursor-pointer', 'hover:text-green'])}
+      class={clsx(['border border-b-solid border-b-zinc/10', 'px-2 py-1', 'cursor-pointer', 'hover:text-green'])}
       onClick={() => {
         pushPrivateConversation(props.friend)
         let idx = friendConvStore.findIndex(i => i.id === props.friend.user_id)
