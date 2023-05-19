@@ -2,6 +2,7 @@ import clsx from 'clsx'
 import type { Component } from 'solid-js'
 import { Show } from 'solid-js'
 import { transformLink } from '~/utils/hook/transformLink'
+import { Conversation, curConv, groupMemberCard } from '~/utils/stores/lists'
 
 const TextMessageShown: Component<{
   text: string
@@ -12,7 +13,8 @@ const TextMessageShown: Component<{
 const AtMessageShown: Component<{
   qq: number
 }> = (props) => {
-  return <>@{props.qq}</>
+  const groupId = curConv()?.id
+  return <>@{(groupId && groupMemberCard[groupId]?.[props.qq]) || props.qq}</>
 }
 
 const ReplyMessageShown: Component<{

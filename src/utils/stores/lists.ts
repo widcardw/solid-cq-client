@@ -50,6 +50,7 @@ const [warnings, setWarnings] = createSignal<WarningMessage[]>([])
 const [forwardMap, setForwardMap] = createStore<Record<string, ReceivedForwardedMessage>>({})
 const [lastForwardId, setLastforwardId] = createSignal('')
 const [groupFsStore, setGroupFsStore] = createStore<Record<string, GroupFsList>>({})
+const [groupMemberCard, setGroupMemberCard] = createStore<Record<string, Record<string, string>>>({}) // { group_id: { user_id: card | nickname } }
 
 function pushRightBottomMessage(config: Omit<WarningMessage, 'id'>) {
   const { ttl } = config
@@ -74,6 +75,7 @@ export {
   groupFsStore, setGroupFsStore,
   WarningType,
   pushRightBottomMessage,
+  groupMemberCard, setGroupMemberCard,
 }
 
 export type {

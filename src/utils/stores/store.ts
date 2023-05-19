@@ -1,6 +1,6 @@
 import type { ReceivedFriendRecall, ReceivedGroupMessage, ReceivedGroupRecall, ReceivedPrivateMessage } from '../api/received-msg-types'
 import { MessageTarget } from '../ws/ws'
-import { friendConvStore, groupConvStore, groupList, setFriendConvStore, setGroupConvStore } from './lists'
+import { friendConvStore, groupConvStore, groupList, groupMemberCard, setFriendConvStore, setGroupConvStore, setGroupMemberCard } from './lists'
 
 /**
  * Store the message with this group in a global storage (not permanently).
@@ -137,10 +137,16 @@ function recallGroupStore(data: ReceivedGroupMessage | ReceivedGroupRecall) {
   setGroupConvStore(idx1, 'list', idx2, 'deleted', true)
 }
 
+function addGroupMemberCard(data: ReceivedGroupMessage) {
+  setGroupMemberCard(String(data.group_id), groupMemberCard[data.group_id] || {})
+  setGroupMemberCard(String(data.group_id), String(data.user_id), data.sender.card || data.sender.nickname)
+}
+
 export {
   addFriendStore,
   addGroupStore,
   recallFriendStore,
   recallGroupStore,
   addGroupMessages,
+  addGroupMemberCard,
 }
