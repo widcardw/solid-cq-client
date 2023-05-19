@@ -1,8 +1,9 @@
 import clsx from 'clsx'
 import type { Component } from 'solid-js'
 import { Show } from 'solid-js'
+import { cqFaceBaseUrl, cqFaceIdSet } from '~/utils/api/cq-face-ids'
 import { transformLink } from '~/utils/hook/transformLink'
-import { Conversation, curConv, groupMemberCard } from '~/utils/stores/lists'
+import { curConv, groupMemberCard } from '~/utils/stores/lists'
 
 const TextMessageShown: Component<{
   text: string
@@ -24,16 +25,18 @@ const ReplyMessageShown: Component<{
 }
 
 const FaceMessageShown: Component<{
-  id: number
+  id: string
 }> = (props) => {
   return (
-    <Show when={props.id <= 221} fallback={`[表情${props.id}]`}>
-      <img
-        class={clsx('inline-flex', 'h-20px', 'vertical-mid')}
-        src={`https://cdn.jsdelivr.net/gh/kyubotics/coolq-http-api@master/docs/qq-face/${props.id}.gif`}
-        alt={`[表情${props.id}]`}
-      />
-    </Show>
+    <>
+      <Show when={cqFaceIdSet.has(Number(props.id))} fallback={`[表情${props.id}]`}>
+        <img
+          class={clsx('inline-flex', 'h-20px', 'vertical-mid')}
+          src={`${cqFaceBaseUrl}${props.id}.gif`}
+          alt={`[表情${props.id}]`}
+        />
+      </Show>
+    </>
   )
 }
 

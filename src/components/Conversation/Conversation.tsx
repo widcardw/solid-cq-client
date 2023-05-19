@@ -1,7 +1,8 @@
 import clsx from 'clsx'
 import type { Component } from 'solid-js'
-import { For, Match, Show, Switch, createSignal } from 'solid-js'
-import { onStartTyping, useFileDialog, useStorage } from 'solidjs-use'
+import { For, Match, Show, Switch, createEffect, createSignal } from 'solid-js'
+import { onStartTyping, useFileDialog, useMagicKeys, useStorage } from 'solidjs-use'
+import { Portal } from 'solid-js/web'
 import { FriendConv } from './FriendConv'
 import { GroupConv } from './GroupConv'
 import type { Conversation as ConversationInterface, FriendConversation, GroupConversation } from '~/utils/stores/lists'
@@ -14,6 +15,8 @@ import { createFileMessage, createImageMessage } from '~/utils/api/sent-message-
 import { u8tobase64 } from '~/utils/msg/transform-tex'
 import { useResizer } from '~/utils/hook/useResizer'
 import { convLoading, setConvLoading } from '~/utils/stores/semaphore'
+import { useConfirm } from '~/utils/hook/useConfirm'
+import { cqFaceBaseUrl, cqFaceIds } from '~/utils/api/cq-face-ids'
 
 type InputElKeyboardEvent = KeyboardEvent & {
   currentTarget: HTMLInputElement
@@ -169,6 +172,15 @@ const Conversation: Component<{
 
   const { size: inputFieldHeight, onResize: handleInputFieldResize } = useResizer()
 
+  const { isRevealed, reveal, unreveal } = useConfirm()
+
+  const { escape } = useMagicKeys()
+
+  createEffect(() => {
+    if (isRevealed() && escape())
+      unreveal()
+  })
+
   return (
     <div class={clsx([props.cls, 'flex flex-col justify-between', 'h-100vh'])}>
       <div class={clsx(['flex flex-col flex-1', 'of-y-auto', 'min-h-30vh'])}>
@@ -199,11 +211,16 @@ const Conversation: Component<{
             title="macOS 使用 command + option + C 复制路径  Windows 使用 Shift + 右键复制路径"
             onClick={toggleFilePathInput}
           />
+          <div
+            class={clsx('i-teenyicons-mood-smile-outline', 'm-2', 'cursor-pointer', 'hover:text-blue')}
+            title="表情"
+            onClick={curConv() && reveal}
+          />
           <div class="flex-1" />
           <div
             class={clsx('i-teenyicons-refresh-alt-outline', 'm-2', 'cursor-pointer', 'hover:text-blue')}
             title="修复消息发送锁死"
-            onClick={() => setConvLoading(false)}
+            onClick={() => curConv() && setConvLoading(false)}
           />
         </div>
         {/* 文件发送 */}
@@ -253,6 +270,31 @@ const Conversation: Component<{
               Cancel
             </span>
           </div>
+        </Show>
+        <Show when={isRevealed()}>
+          <Portal>
+            <div class={clsx('modal-layout shadow space-y-2')}>
+              <div
+                class={clsx('absolute', 'top-2 right-2', 'i-teenyicons-x-solid', 'cursor-pointer', 'hover:text-blue')}
+                onClick={unreveal}
+              />
+              <div class={clsx('grid', 'grid-cols-10', 'max-h-400px', 'of-y-auto')}>
+                <For each={cqFaceIds}>
+                  {id => (
+                    <img
+                      src={`${cqFaceBaseUrl + id}.gif`}
+                      class={clsx('h-24px', 'm-2', 'cursor-pointer')}
+                      onClick={() => {
+                        const el = sendEl()
+                        if (el)
+                          el.value = `${el.value.slice(0, el.selectionStart)}[CQ:face,id=${id}]${el.value.slice(el.selectionEnd)}`
+                      }}
+                    />
+                  )}
+                </For>
+              </div>
+            </div>
+          </Portal>
         </Show>
         {/* 输入框 */}
         <textarea

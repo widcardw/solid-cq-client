@@ -67,7 +67,7 @@ interface CqJsonCardMessage extends CqMessageType {
 interface CqFaceMessage extends CqMessageType {
   type: 'face'
   data: {
-    id: number
+    id: string
   }
 }
 
