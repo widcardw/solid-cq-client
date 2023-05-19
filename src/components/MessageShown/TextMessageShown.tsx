@@ -27,8 +27,8 @@ const FaceMessageShown: Component<{
   return (
     <Show when={props.id <= 221} fallback={`[表情${props.id}]`}>
       <img
-        class={clsx('inline-flex', 'h-24px')}
-        src={`https://cdn.widcard.win/assets/cq-face/${props.id}.png`}
+        class={clsx('inline-flex', 'h-20px', 'vertical-mid')}
+        src={`https://cdn.jsdelivr.net/gh/kyubotics/coolq-http-api@master/docs/qq-face/${props.id}.gif`}
         alt={`[表情${props.id}]`}
       />
     </Show>
