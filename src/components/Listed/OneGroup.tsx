@@ -10,7 +10,7 @@ const OneGroup: Component<{
 }> = (props) => {
   return (
     <div
-      class={clsx(['border border-b-solid border-b-zinc/20', 'p-1'])}
+      class={clsx(['border border-b-solid border-b-zinc/10', 'px-2 py-1', 'cursor-pointer', 'hover:text-blue', 'line-break-anywhere'])}
       onClick={() => {
         pushGroupConversation(props.group)
         let idx = groupConvStore.findIndex(i => i.id === props.group.group_id)

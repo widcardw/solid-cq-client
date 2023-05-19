@@ -70,3 +70,28 @@ button:hover {
 img {
   display: block;
 }
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: #a2a2a2;
+  background-clip: padding-box;
+  min-height: 28px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #c2c2c2;
+}
+
+::-webkit-scrollbar-track-piece {
+  background-color: transparent;
+}
+
+/* firefox */
+html {
+  scrollbar-color: #c2c2c2 transparent;
+}

@@ -60,15 +60,23 @@ const MessageShown: Component<{
   msg: CqReceivedMessage
 }> = (props) => {
   return (
-    <div class="break-all">
-      <Show
-        when={Array.isArray(props.msg)}
-        fallback={<OnePieceOfMessage msg={props.msg as MultiTypeReceivedMessage} />}
-      >
-        <For each={props.msg as MultiTypeReceivedMessage[]}>
-          {m => <OnePieceOfMessage msg={m} />}
-        </For>
-      </Show>
+    <div class="relative">
+      {/* 气泡前面的装饰性圆弧 */}
+      <div class="absolute w-23px h-26px overflow-hidden">
+        <div class="absolute left-9px top--18px w-44px h-42px border-rd-50% bg-#333" />
+        <div class="absolute left-4px top--48px w-60px h-60px border-rd-50%" style={{ background: 'var(--bg-color)' }} />
+      </div>
+      {/* 气泡主体 */}
+      <div class="break-all mt-10px ml-20px px-16px py-10px border-rd-20px bg-#333 max-w-max">
+        <Show
+          when={Array.isArray(props.msg)}
+          fallback={<OnePieceOfMessage msg={props.msg as MultiTypeReceivedMessage} />}
+        >
+          <For each={props.msg as MultiTypeReceivedMessage[]}>
+            {m => <OnePieceOfMessage msg={m} />}
+          </For>
+        </Show>
+      </div>
     </div>
   )
 }

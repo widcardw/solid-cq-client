@@ -171,7 +171,7 @@ const Conversation: Component<{
 
   return (
     <div class={clsx([props.cls, 'flex flex-col justify-between', 'h-100vh'])}>
-      <div class={clsx(['flex flex-col', 'max-h-70vh', 'min-h-30vh'])}>
+      <div class={clsx(['flex flex-col flex-1', 'of-y-auto', 'min-h-30vh'])}>
         <Switch>
           <Match when={props.conv?.type === MessageTarget.Private}>
             <FriendConv conv={props.conv as FriendConversation} />
