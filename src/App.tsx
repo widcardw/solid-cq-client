@@ -23,6 +23,8 @@ const App: Component = () => {
   const onListStateChange = (state: ListState) => {
     if (listState() === state)
       setShowMiddlePanel(show => !show)
+    else if (!showMiddlePanel())
+      setShowMiddlePanel(true)
     setListState(state)
   }
   return (
