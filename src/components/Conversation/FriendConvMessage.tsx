@@ -30,9 +30,11 @@ const FriendConvMessage: Component<{
           onClick={() => {
             // template string concatenate may conflict with unocss
             const el = sendEl()
-            if (el)
+            if (el) {
               // eslint-disable-next-line prefer-template
               el.value = '[CQ:reply,id=' + props.item.message_id + ']' + el.value
+              el.focus()
+            }
           }}
         />
         {/* @ 按钮，但实际上没有用 */}
