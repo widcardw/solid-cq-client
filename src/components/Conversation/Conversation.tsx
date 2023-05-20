@@ -350,7 +350,11 @@ const Conversation: Component<{
             autofocus={true}
           />
           <Show when={showTexPreview()}>
-            <div class={clsx('absolute', 'bottom-4 right-4', 'of-hidden')} innerHTML={msgContentToSvg(texContent())} />
+            <div
+              class={clsx('absolute', 'of-hidden', 'translate-y--100% translate-x-4', 'p-2', 'shadow', 'rounded')}
+              innerHTML={msgContentToSvg(texContent())}
+              style={{ background: 'var(--bg-color)' }}
+            />
           </Show>
         </div>
       </div>
