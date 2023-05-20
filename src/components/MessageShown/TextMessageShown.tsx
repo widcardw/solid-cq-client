@@ -29,7 +29,7 @@ const FaceMessageShown: Component<{
 }> = (props) => {
   return (
     <>
-      <Show when={cqFaceIdSet.has(Number(props.id))} fallback={`[表情${props.id}]`}>
+      <Show when={cqFaceIdSet.has(Number(props.id))} fallback={`[表情 ${props.id}]`}>
         <img
           class={clsx('inline-flex', 'h-20px', 'vertical-mid')}
           src={`${cqFaceBaseUrl}${props.id}.gif`}
