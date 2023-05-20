@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import type { Component } from 'solid-js'
 import { For, Match, Show, Switch, createEffect, createSignal } from 'solid-js'
-import { onStartTyping, useFileDialog, useMagicKeys, useStorage } from 'solidjs-use'
+import { onStartTyping, useDebounceFn, useFileDialog, useMagicKeys, useStorage } from 'solidjs-use'
 import { Portal } from 'solid-js/web'
 import { FriendConv } from './FriendConv'
 import { GroupConv } from './GroupConv'
@@ -12,7 +12,7 @@ import { MessageTarget } from '~/utils/ws/ws'
 import { buildMsg } from '~/cq/build-msg'
 import type { CqImageMessage, CqSentMessage } from '~/utils/api/sent-message-type'
 import { createFileMessage, createImageMessage } from '~/utils/api/sent-message-type'
-import { u8tobase64 } from '~/utils/msg/transform-tex'
+import { msgContentToSvg, renderMath, u8tobase64 } from '~/utils/msg/transform-tex'
 import { useResizer } from '~/utils/hook/useResizer'
 import { convLoading, setConvLoading } from '~/utils/stores/semaphore'
 import { useConfirm } from '~/utils/hook/useConfirm'
@@ -41,6 +41,8 @@ const Conversation: Component<{
   const { files, open: openFileDlg, reset } = useFileDialog()
   const [pastedImgs, setPastedImgs] = createSignal<CqImageMessage[]>([])
   const [sendByEnter] = useStorage('send-by-enter', false)
+  const [enableTransformTex, setEnableTransformTex] = useStorage('transform-tex', true)
+
   onStartTyping(() => {
     sendEl()?.focus()
   })
@@ -134,7 +136,7 @@ const Conversation: Component<{
       return
     setConvLoading(true)
 
-    ws()?.m(curConvInstance.type, curConvInstance.id, await buildMsg((e.target as HTMLTextAreaElement).value))
+    ws()?.m(curConvInstance.type, curConvInstance.id, await buildMsg((e.target as HTMLTextAreaElement).value, enableTransformTex()))
   }
 
   const pasteImageHandler = async (e: TextareaElClipboardEvent) => {
@@ -181,6 +183,30 @@ const Conversation: Component<{
       unreveal()
   })
 
+  const [showTexPreview, setShowTexPreview] = createSignal(false)
+  const [texContent, setTexContent] = createSignal('')
+
+  const debouncedPreviewTex = useDebounceFn(() => {
+    if (!enableTransformTex()) {
+      setShowTexPreview(false)
+      return
+    }
+    const el = sendEl()
+    if (!el) {
+      setShowTexPreview(false)
+      return
+    }
+    if ((!files() || files()?.length === 0) && pastedImgs().length === 0
+        && (el.value.startsWith('/tex') || el.value.startsWith('/am'))) {
+      setShowTexPreview(true)
+      setTexContent(el.value)
+    }
+    else {
+      setShowTexPreview(false)
+      setTexContent('')
+    }
+  }, 800)
+
   return (
     <div class={clsx([props.cls, 'flex flex-col justify-between', 'h-100vh'])}>
       <div class={clsx(['flex flex-col flex-1', 'of-y-auto', 'min-h-30vh'])}>
@@ -216,6 +242,13 @@ const Conversation: Component<{
             title="表情"
             onClick={curConv() && reveal}
           />
+          <div
+            class={clsx('mx-2', 'cursor-pointer', { 'text-blue': enableTransformTex() })}
+            title="自动转换 /tex 和 /am 公式"
+            onClick={() => setEnableTransformTex(p => !p)}
+          >
+            <div innerHTML={renderMath(String.raw`\TeX`)} />
+          </div>
           <div class="flex-1" />
           <div
             class={clsx('i-teenyicons-refresh-alt-outline', 'm-2', 'cursor-pointer', 'hover:text-blue')}
@@ -297,23 +330,29 @@ const Conversation: Component<{
           </Portal>
         </Show>
         {/* 输入框 */}
-        <textarea
-          ref={r => setSendEl(r)}
-          placeholder={`${!sendByEnter() ? 'Ctrl + ' : ''}Enter 发送文本`}
-          class={clsx([
-            'border-none',
-            'm-0 p-4',
-            'flex-1',
-            '!outline-none',
-            'resize-none',
-            'leading-loose',
-            'disabled:op-50',
-          ])}
-          disabled={ws() === undefined || convLoading() || !curConv()}
-          onKeyDown={sendMessageHandler}
-          onPaste={pasteImageHandler}
-          autofocus={true}
-        />
+        <div class={clsx('flex-1', 'flex', 'relative')}>
+          <textarea
+            ref={r => setSendEl(r)}
+            placeholder={`${!sendByEnter() ? 'Ctrl + ' : ''}Enter 发送文本`}
+            class={clsx([
+              'border-none',
+              'm-0 p-4',
+              'flex-1',
+              '!outline-none',
+              'resize-none',
+              'leading-loose',
+              'disabled:op-50',
+            ])}
+            disabled={ws() === undefined || convLoading() || !curConv()}
+            onKeyDown={sendMessageHandler}
+            onPaste={pasteImageHandler}
+            onInput={debouncedPreviewTex}
+            autofocus={true}
+          />
+          <Show when={showTexPreview()}>
+            <div class={clsx('absolute', 'bottom-1 right-1')} innerHTML={msgContentToSvg(texContent())} />
+          </Show>
+        </div>
       </div>
     </div>
   )

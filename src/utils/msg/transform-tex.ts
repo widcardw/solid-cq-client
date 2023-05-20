@@ -73,7 +73,7 @@ function u8tobase64(bytes: Uint8Array) {
   return `base64://${window.btoa(data)}`
 }
 
-async function transformTex(msg: string) {
+function msgContentToSvg(msg: string) {
   let tex = ''
   if (msg.startsWith('/tex'))
     tex = msg.replace('/tex', '').trim()
@@ -82,6 +82,11 @@ async function transformTex(msg: string) {
     tex = am.toTex(msg.replace('/am', '').trim())
 
   const svg = renderMath(tex)
+  return svg
+}
+
+async function transformTex(msg: string) {
+  const svg = msgContentToSvg(msg)
   const b64 = await svgToPng(svg)
   return createImageMessage(b64)
 }
@@ -90,4 +95,6 @@ export {
   transformTex,
   svgToPng,
   u8tobase64,
+  msgContentToSvg,
+  renderMath,
 }

@@ -33,8 +33,8 @@ function* _construct(msg: string) {
   }
 }
 
-async function buildMsg(msg: string) {
-  if (msg.startsWith('/tex') || msg.startsWith('/am'))
+async function buildMsg(msg: string, enableTransformTex = true) {
+  if (enableTransformTex && (msg.startsWith('/tex') || msg.startsWith('/am')))
     return await transformTex(msg)
   return transformReply(msg)
 }
