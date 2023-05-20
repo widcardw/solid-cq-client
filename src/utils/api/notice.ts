@@ -1,5 +1,5 @@
 import { pushGroupConversation, pushPrivateConversation } from '../stores/conv'
-import { friendList } from '../stores/lists'
+import { friendList, groupMemberCard } from '../stores/lists'
 import { addFriendStore, addGroupStore } from '../stores/store'
 import type { ReceivedGroupMessage, ReceivedPrivateMessage } from './received-msg-types'
 import { _createFileMessage } from './sent-message-type'
@@ -86,7 +86,7 @@ function receivedGroupUploadHandler(data: GroupUploadNoticeType) {
       nickname: user_id.toString(),
       sex: 'unknown',
       age: 0,
-      card: '',
+      card: groupMemberCard[group_id]?.[user_id] || '',
       area: '',
       level: '',
       role: 'member',

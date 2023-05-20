@@ -19,7 +19,7 @@ const LeftSidebar: Component<{
   const [sendByEnter, setSendByEnter] = useStorage('send-by-enter', false)
   const [wsUrl, setWsUrl] = useStorage('ws-url', 'ws://0.0.0.0:5700')
   return (
-    <div class={clsx(props.cls, 'flex flex-col')}>
+    <div class={clsx(props.cls, 'flex flex-col', 'border border-r-solid border-r-zinc/40')}>
       <div
         class={clsx(['text-1.5rem', 'i-teenyicons-message-text-alt-outline', 'cursor-pointer', 'm-3', props.state === ListState.Message && 'text-blue'])}
         title="最近消息"

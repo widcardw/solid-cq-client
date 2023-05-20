@@ -19,7 +19,7 @@ function* _construct(msg: string) {
   for (const [type, data] of _iter_message(msg)) {
     if (type === 'text') {
       if (data)
-        yield createMessageSegment(type, { text: decodeURI(data) })
+        yield createMessageSegment(type, { text: data })
     }
     else {
       const parsedData: { [key: string]: string } = {}

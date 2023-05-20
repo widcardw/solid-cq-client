@@ -15,10 +15,16 @@ import { ws } from './utils/ws/instance'
 import { ICONMAP } from './utils/hook/icon-map'
 
 const [listState, setListState] = createSignal<ListState>(ListState.Message)
+const [showMiddlePanel, setShowMiddlePanel] = createSignal(true)
 const App: Component = () => {
   onCleanup(() => {
     ws()?.close()
   })
+  const onListStateChange = (state: ListState) => {
+    if (listState() === state)
+      setShowMiddlePanel(show => !show)
+    setListState(state)
+  }
   return (
     <>
       <ErrorBoundary
@@ -31,8 +37,8 @@ const App: Component = () => {
         )}
       >
         <div class={styles.App}>
-          <LeftSidebar state={listState()} onListStateChange={setListState} />
-          <div class={clsx(['w-250px', 'h-100vh', 'border border-l-solid border-r-solid border-l-zinc/40 border-r-zinc/40'])}>
+          <LeftSidebar state={listState()} onListStateChange={onListStateChange} />
+          <div class={clsx('w-250px', 'h-100vh', 'border border-r-solid border-r-zinc/40', { 'display-none': !showMiddlePanel() })}>
             <Switch>
               <Match when={listState() === ListState.Message}>
                 <RecentMessage list={recentConv()} />
