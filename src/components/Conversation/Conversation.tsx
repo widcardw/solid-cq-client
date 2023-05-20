@@ -240,7 +240,7 @@ const Conversation: Component<{
           <div
             class={clsx('i-teenyicons-mood-smile-outline', 'm-2', 'cursor-pointer', 'hover:text-blue')}
             title="表情"
-            onClick={curConv() && reveal}
+            onClick={() => curConv() && reveal()}
           />
           <div
             class={clsx('mx-2', 'cursor-pointer', { 'text-blue': enableTransformTex() })}

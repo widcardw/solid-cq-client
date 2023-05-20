@@ -34,9 +34,11 @@ const GroupConvMessage: Component<{
           onClick={() => {
             // template string concatenate may conflict with unocss
             const el = sendEl()
-            if (el)
-            // eslint-disable-next-line prefer-template
+            if (el) {
+              // eslint-disable-next-line prefer-template
               el.value = '[CQ:reply,id=' + props.item.message_id + ']' + el.value
+              el.focus()
+            }
           }}
         />
         <div
@@ -45,9 +47,11 @@ const GroupConvMessage: Component<{
           onClick={() => {
             // template string concatenate may conflict with unocss
             const el = sendEl()
-            if (el)
-            // eslint-disable-next-line prefer-template
+            if (el) {
+              // eslint-disable-next-line prefer-template
               el.value = el.value + '[CQ:at,qq=' + props.item.sender.user_id + ']'
+              el.focus()
+            }
           }}
         />
         <Show when={isSelf}>
