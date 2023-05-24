@@ -15,9 +15,6 @@ devDependencies:
   '@resvg/resvg-wasm':
     specifier: ^2.4.1
     version: 2.4.1
-  '@types/dom-to-image':
-    specifier: ^2.6.4
-    version: 2.6.4
   '@types/node':
     specifier: ^18.15.5
     version: 18.16.8
@@ -30,9 +27,6 @@ devDependencies:
   clsx:
     specifier: ^1.2.1
     version: 1.2.1
-  dom-to-image:
-    specifier: ^2.6.0
-    version: 2.6.0
   eslint:
     specifier: ^8.36.0
     version: 8.40.0
@@ -993,10 +987,6 @@ packages:
       '@babel/types': 7.21.5
     dev: true
 
-  /@types/dom-to-image@2.6.4:
-    resolution: {integrity: sha512-UddUdGF1qulrSDulkz3K2Ypq527MR6ixlgAzqLbxSiQ0icx0XDlIV+h4+edmjq/1dqn0KgN0xGSe1kI9t+vGuw==}
-    dev: true
-
   /@types/estree@1.0.1:
     resolution: {integrity: sha512-LG4opVs2ANWZ1TJoKc937iMmNstM/d0ae1vNbnBvBhqCSezgVUOzcLCqbI5elV8Vy6WKwKjaqR+zO9VKirBBCA==}
     dev: true
@@ -1874,10 +1864,6 @@ packages:
       domelementtype: 2.3.0
       domhandler: 5.0.3
       entities: 4.5.0
-    dev: true
-
-  /dom-to-image@2.6.0:
-    resolution: {integrity: sha512-Dt0QdaHmLpjURjU7Tnu3AgYSF2LuOmksSGsUcE6ItvJoCWTBEmiMXcqBdNSAm9+QbbwD7JMoVsuuKX6ZVQv1qA==}
     dev: true
 
   /domelementtype@2.3.0:
