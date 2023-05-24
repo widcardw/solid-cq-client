@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import type { Component } from 'solid-js'
-import { For, Match, Show, Switch, createEffect, createSignal } from 'solid-js'
+import { For, Match, Show, Switch, createEffect, createSignal, untrack } from 'solid-js'
 import { onStartTyping, useDebounceFn, useFileDialog, useMagicKeys, useStorage } from 'solidjs-use'
 import { Portal } from 'solid-js/web'
 import { FriendConv } from './FriendConv'
@@ -14,9 +14,10 @@ import type { CqImageMessage, CqSentMessage } from '~/utils/api/sent-message-typ
 import { createFileMessage, createImageMessage } from '~/utils/api/sent-message-type'
 import { msgContentToSvg, renderMath, u8tobase64 } from '~/utils/msg/transform-tex'
 import { useResizer } from '~/utils/hook/useResizer'
-import { convLoading, setConvLoading } from '~/utils/stores/semaphore'
+import { convLoading, setConvLoading, setShowTexPreview, showTexPreview } from '~/utils/stores/semaphore'
 import { useConfirm } from '~/utils/hook/useConfirm'
 import { cqFaceBaseUrl, cqFaceIds } from '~/utils/api/cq-face-ids'
+import { transformCode } from '~/utils/msg/transform-code'
 
 type InputElKeyboardEvent = KeyboardEvent & {
   currentTarget: HTMLInputElement
@@ -42,6 +43,9 @@ const Conversation: Component<{
   const [pastedImgs, setPastedImgs] = createSignal<CqImageMessage[]>([])
   const [sendByEnter] = useStorage('send-by-enter', false)
   const [enableTransformTex, setEnableTransformTex] = useStorage('transform-tex', true)
+  const [enableTransformCode, setEnableTransformCode] = useStorage('transform-code', true)
+  // const [showTexPreview, setShowTexPreview] = createSignal(false)
+  const [preview, setPreview] = createSignal('')
 
   onStartTyping(() => {
     sendEl()?.focus()
@@ -136,7 +140,12 @@ const Conversation: Component<{
       return
     setConvLoading(true)
 
-    ws()?.m(curConvInstance.type, curConvInstance.id, await buildMsg((e.target as HTMLTextAreaElement).value, enableTransformTex()))
+    ws()?.m(curConvInstance.type, curConvInstance.id, await buildMsg((e.target as HTMLTextAreaElement).value, {
+      enableTransformTex: enableTransformTex(),
+      enableTransformCode: enableTransformCode(),
+    }))
+
+    // setShowTexPreview(false)
   }
 
   const pasteImageHandler = async (e: TextareaElClipboardEvent) => {
@@ -183,27 +192,28 @@ const Conversation: Component<{
       unreveal()
   })
 
-  const [showTexPreview, setShowTexPreview] = createSignal(false)
-  const [texContent, setTexContent] = createSignal('')
-
-  const debouncedPreviewTex = useDebounceFn(() => {
-    if (!enableTransformTex()) {
-      setShowTexPreview(false)
-      return
-    }
+  const debouncedPreviewTex = useDebounceFn(async () => {
     const el = sendEl()
-    if (!el) {
+    if (!el || pastedImgs().length > 0) {
       setShowTexPreview(false)
+      setPreview('')
       return
     }
-    if ((!files() || files()?.length === 0) && pastedImgs().length === 0
-        && (el.value.startsWith('/tex') || el.value.startsWith('/am'))) {
+    if (enableTransformTex() && (el.value.startsWith('/tex') || el.value.startsWith('/am'))) {
       setShowTexPreview(true)
-      setTexContent(el.value)
+      setPreview(msgContentToSvg(el.value))
+    }
+    else if (enableTransformCode() && el.value.startsWith('```') && el.value.trimEnd().endsWith('```')) {
+      setShowTexPreview(true)
+      const match = el.value.trim().match(/^```(\w*)\n([\s\S]+)\n```$/)
+      if (match) {
+        const [_, lang, code] = match
+        setPreview(await transformCode(code, lang))
+      }
     }
     else {
       setShowTexPreview(false)
-      setTexContent('')
+      setPreview('')
     }
   }, 800)
 
@@ -249,6 +259,11 @@ const Conversation: Component<{
           >
             <div innerHTML={renderMath(String.raw`\TeX`)} />
           </div>
+          <div
+            class={clsx('i-teenyicons-code-outline', 'm-2', 'cursor-pointer', 'hover:text-blue', { 'text-blue': enableTransformCode() })}
+            title="自动转换代码"
+            onClick={() => setEnableTransformCode(p => !p)}
+          />
           <div class="flex-1" />
           <div
             class={clsx('i-teenyicons-refresh-alt-outline', 'm-2', 'cursor-pointer', 'hover:text-blue')}
@@ -349,10 +364,10 @@ const Conversation: Component<{
             onInput={debouncedPreviewTex}
             autofocus={true}
           />
-          <Show when={showTexPreview()}>
+          <Show when={showTexPreview() && preview().trim()}>
             <div
-              class={clsx('absolute', 'of-hidden', 'translate-y--100% translate-x-4', 'p-2', 'shadow', 'rounded')}
-              innerHTML={msgContentToSvg(texContent())}
+              class={clsx('absolute', 'of-hidden', 'translate-y--100% translate-x-4', 'p-2', 'shadow', 'rounded', 'max-w-80vw')}
+              innerHTML={preview()}
               style={{ background: 'var(--bg-color)' }}
             />
           </Show>

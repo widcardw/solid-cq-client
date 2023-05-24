@@ -1,6 +1,8 @@
-import { createMessageSegment } from '~/utils/api/sent-message-type'
+import { createImageMessage, createMessageSegment, createTextMessage } from '~/utils/api/sent-message-type'
 import type { CqSentMessage } from '~/utils/api/sent-message-type'
-import { transformTex } from '~/utils/msg/transform-tex'
+import { transformCode } from '~/utils/msg/transform-code'
+import { svgToPng, transformTex } from '~/utils/msg/transform-tex'
+import { setWarnings } from '~/utils/stores/lists'
 
 function* _iter_message(msg: string): Generator<[string, string]> {
   let text_begin = 0
@@ -33,9 +35,41 @@ function* _construct(msg: string) {
   }
 }
 
-async function buildMsg(msg: string, enableTransformTex = true) {
+async function buildMsg(msg: string, config?: {
+  enableTransformTex?: boolean
+  enableTransformCode?: boolean
+}) {
+  let enableTransformCode = true
+  let enableTransformTex = true
+  if (config)
+    ({ enableTransformCode = true, enableTransformTex = true } = config)
   if (enableTransformTex && (msg.startsWith('/tex') || msg.startsWith('/am')))
     return await transformTex(msg)
+  if (enableTransformCode && (msg.startsWith('```') && msg.trimEnd().endsWith('```'))) {
+    const match = msg.trim().match(/^```(\w*)\n([\s\S]+)\n```$/)
+    if (match) {
+      const [_, lang, code] = match
+      const svg = await transformCode(code, lang)
+      const canvas = document.createElement('canvas')
+      const viewBoxMatch = svg.match(/viewBox="([^"]+)"/)![1]
+      const [l, u, r, d] = viewBoxMatch.split(' ').map(i => parseFloat(i))
+      canvas.width = r - l
+      canvas.height = d - u
+      // console.log(canvas.width, canvas.height)
+      const context = canvas.getContext('2d')
+      const image = new Image()
+      image.src = `data:image/svg+xml;base64,${window.btoa(svg)}`
+      await new Promise((resolve) => {
+        image.onload = () => {
+          context?.drawImage(image, l, u, r, d)
+          resolve(undefined)
+        }
+      })
+      const b64 = canvas.toDataURL().replace(/^data:image\/png;base64,/, 'base64://')
+      return createImageMessage(b64)
+    }
+    return createTextMessage('消息发送失败')
+  }
   return transformReply(msg)
 }
 

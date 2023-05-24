@@ -7,7 +7,7 @@ import { addFriendStore, addGroupMemberCard, addGroupMessages, addGroupStore, re
 import { isGroupUploadFile, isOfflineFile, receivedGroupUploadHandler, receivedOfflineFileHandler } from '../api/notice'
 import { _createFileMessage } from '../api/sent-message-type'
 import type { GroupFsList } from '../api/group-fs'
-import { setConvLoading } from '../stores/semaphore'
+import { setConvLoading, setShowTexPreview } from '../stores/semaphore'
 import { WsGetApi, createWs } from './ws'
 import type { CqWs } from './ws'
 
@@ -91,6 +91,7 @@ function initWs(url: string) {
         if (el) {
           el.value = ''
           el.focus()
+          setShowTexPreview(false)
         }
 
         return

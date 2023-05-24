@@ -44,9 +44,11 @@ function addPadding(svg: string): string {
   })
 }
 
-async function svgToPng(svg: string) {
-  svg = svg.match(/<svg(.*)<\/svg>/)![0]
-  svg = addPadding(svg)
+async function svgToPng(svg: string, padding = true) {
+  if (padding) {
+    svg = svg.match(/<svg(.*)<\/svg>/)![0]
+    svg = addPadding(svg)
+  }
   if (!wasmInited()) {
     await initWasm(fetch('/index_bg.wasm'))
     setWasmInited(true)
