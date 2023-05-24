@@ -1,6 +1,6 @@
 import { getHighlighter, setCDN, setWasm } from 'shiki'
-/** @ts-expect-error type declaration */
-import { getSVGRenderer } from 'shiki-renderer-svg/dist/index.browser.mjs'
+// @ts-expect-error type declaration
+import { getSVGRenderer } from '../shiki/index.browser.mjs'
 
 let wasm: any
 

@@ -1,8 +1,7 @@
 import { createImageMessage, createMessageSegment, createTextMessage } from '~/utils/api/sent-message-type'
 import type { CqSentMessage } from '~/utils/api/sent-message-type'
 import { transformCode } from '~/utils/msg/transform-code'
-import { svgToPng, transformTex } from '~/utils/msg/transform-tex'
-import { setWarnings } from '~/utils/stores/lists'
+import { transformTex } from '~/utils/msg/transform-tex'
 
 function* _iter_message(msg: string): Generator<[string, string]> {
   let text_begin = 0
