@@ -1,3 +1,7 @@
+/* eslint-disable */
+// @ts-nocheck
+// Copied from shikijs/shiki/packages/shiki-renderer-svg
+// To avoid installing the dependencies of playwright
 import { FontStyle } from 'shiki';
 
 function measureFont([fontName, fontSize]) {
