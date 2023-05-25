@@ -106,7 +106,7 @@ async function getSVGRenderer(options) {
       let svg = `<svg viewBox="0 0 ${bgWidth} ${bgHeight}" width="${bgWidth}" height="${bgHeight}" xmlns="http://www.w3.org/2000/svg">
 `;
       svg += `<rect id="bg" fill="${bg}" width="${bgWidth}" height="${bgHeight}" rx="${bgCornerRadius}" fill-opacity="${bgFillOpacity}"></rect>`;
-      svg += `<g id="tokens" transform="translate(${measurement.width * bgSideCharPadding}, ${lineheight * bgVerticalCharPadding})">`;
+      svg += `<g id="tokens" transform="translate(${measurement.width * bgSideCharPadding}, ${lineheight * bgVerticalCharPadding - 3})">`;
       lines.forEach((l, index) => {
         if (l.length === 0) {
           svg += "\n";

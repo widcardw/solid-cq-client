@@ -1,7 +1,11 @@
-import { getHighlighter, setCDN, setWasm } from 'shiki'
+import { BUNDLED_LANGUAGES, getHighlighter, setCDN, setWasm } from 'shiki'
+import type { Highlighter, Lang } from 'shiki'
 // @ts-expect-error type declaration
 import { getSVGRenderer } from '../shiki/index.browser.mjs'
+import { WarningType, pushRightBottomMessage } from '../stores/lists.js'
 
+let highlighter: Highlighter
+let svgRenderer: any
 let wasm: any
 
 async function transformCode(code: string, lang?: string): Promise<string> {
@@ -9,15 +13,43 @@ async function transformCode(code: string, lang?: string): Promise<string> {
     wasm = await fetch('/onig.wasm').then(res => res.arrayBuffer())
   setWasm(wasm)
   setCDN('https://cdn.jsdelivr.net/npm/shiki/')
-  const highlighter = await getHighlighter({
-    theme: 'nord',
-  })
 
-  const svgRenderer = await getSVGRenderer({
-    bg: '#2E3440',
-    fontFamily: 'IBM Plex Mono',
-    fontSize: 14,
-  })
+  // init highlighter
+  if (!highlighter) {
+    highlighter = await getHighlighter({
+      theme: 'nord',
+      langs: ['javascript', 'python'],
+    })
+  }
+
+  // init svgRenderer
+  if (!svgRenderer) {
+    svgRenderer = await getSVGRenderer({
+      bg: '#2E3440',
+      fontFamily: 'IBM Plex Mono',
+      fontSize: 14,
+      bgSideCharPadding: 1,
+      bgVerticalCharPadding: 0.5,
+    })
+  }
+
+  // init language
+  if (!highlighter.getLoadedLanguages().includes(lang as Lang)) {
+    const hasLang = BUNDLED_LANGUAGES.some((bundle) => {
+      return bundle.id === lang || bundle.aliases?.includes(lang as Lang)
+    })
+    if (hasLang) {
+      await highlighter.loadLanguage(lang as Lang)
+    }
+    else {
+      console.error(`language "${lang}" is not supported by shiki`)
+      pushRightBottomMessage({
+        type: WarningType.Warning,
+        msg: `抱歉，不支持语言 “${lang}” 的语法高亮`,
+      })
+      lang = 'text'
+    }
+  }
 
   const tokens = highlighter.codeToThemedTokens(code, lang || 'text')
   const out = svgRenderer.renderToSVG(tokens)
