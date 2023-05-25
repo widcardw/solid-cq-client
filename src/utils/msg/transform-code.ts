@@ -31,8 +31,8 @@ async function transformCode(code: string, lang?: string): Promise<string> {
       bg: '#2E3440',
       fontFamily: 'IBM Plex Mono',
       fontSize: 14,
-      bgSideCharPadding: 1,
-      bgVerticalCharPadding: 0.5,
+      bgSideCharPadding: 2,
+      bgVerticalCharPadding: 0.75,
     })
   }
 
