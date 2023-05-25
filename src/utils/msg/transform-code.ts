@@ -1,12 +1,15 @@
 import { BUNDLED_LANGUAGES, getHighlighter, setCDN, setWasm } from 'shiki'
 import type { Highlighter, Lang } from 'shiki'
-// @ts-expect-error type declaration
-import { getSVGRenderer } from '../shiki/index.browser.mjs'
+import { getSVGRenderer } from '../shiki/index'
 import { WarningType, pushRightBottomMessage } from '../stores/lists.js'
 
 let highlighter: Highlighter
-let svgRenderer: any
-let wasm: any
+
+type Await<T> = T extends PromiseLike<infer R> ? R : never
+type SVGRendererType = Await<ReturnType<typeof getSVGRenderer>>
+
+let svgRenderer: SVGRendererType
+let wasm: ArrayBuffer
 
 async function transformCode(code: string, lang?: string): Promise<string> {
   if (!wasm)

@@ -1,6 +1,6 @@
 /* eslint-disable */
 // @ts-nocheck
-// Copied from shikijs/shiki/packages/shiki-renderer-svg
+// Copied from shikijs/shiki/packages/shiki-renderer-svg browser
 // To avoid installing the dependencies of playwright
 import { FontStyle } from 'shiki';
 
