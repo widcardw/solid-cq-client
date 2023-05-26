@@ -11,6 +11,7 @@ import { Resvg, initWasm } from '@resvg/resvg-wasm'
 import { AsciiMath } from 'asciimath-parser'
 import { createImageMessage } from '../api/sent-message-type'
 import { setWasmInited, wasmInited } from '../stores/semaphore'
+import { canvasSvgToBase64 } from '~/cq/build-msg'
 
 const am = new AsciiMath()
 
@@ -88,8 +89,9 @@ function msgContentToSvg(msg: string) {
 }
 
 async function transformTex(msg: string) {
-  const svg = msgContentToSvg(msg)
-  const b64 = await svgToPng(svg)
+  let svg = msgContentToSvg(msg)
+  svg = svg.match(/<svg(.*)<\/svg>/)![0]
+  const b64 = await canvasSvgToBase64(svg, { padding: 20 })
   return createImageMessage(b64)
 }
 

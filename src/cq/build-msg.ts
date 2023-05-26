@@ -34,6 +34,67 @@ function* _construct(msg: string) {
   }
 }
 
+function encodeBase64(str: string) {
+  return window.btoa(
+    encodeURIComponent(str)
+      .replace(
+        /%([0-9A-F]{2})/g,
+        (_, $1) => String.fromCharCode(parseInt(`0x${$1}`, 16)),
+      ),
+  )
+}
+
+function decodeBase64(str: string) {
+  return decodeURIComponent(
+    window.atob(str).split('').map(
+      c => c.charCodeAt(0) >= 0x80
+        ? `%${c.charCodeAt(0).toString(16)}`
+        : c,
+    ).join(''),
+  )
+}
+
+/**
+ * Transform SVG string into base64 string with native canvas
+ */
+async function canvasSvgToBase64(svg: string, config?: {
+  /**
+   * add padding to svg
+   */
+  padding?: number
+}): Promise<string> {
+  const { padding = 0 } = config || { padding: 0 }
+  const canvas = document.createElement('canvas')
+  const viewBoxMatch = svg.match(/viewBox="([^"]+)"/)![1]
+  let [, , w, h] = viewBoxMatch.split(' ').map(i => parseFloat(i))
+
+  if (w >= 2000 || h >= 2000) {
+    const rate = 10
+    w /= rate
+    h /= rate
+  }
+
+  const width = w + padding * 2
+  const height = h + padding * 2
+
+  canvas.width = width
+  canvas.height = height
+
+  const context = canvas.getContext('2d')!
+  context.fillStyle = 'white'
+  context.fillRect(0, 0, width, height)
+  const image = new Image()
+  image.src = `data:image/svg+xml;base64,${encodeBase64((svg))}`
+  await new Promise((resolve) => {
+    image.onload = () => {
+      context.drawImage(image, padding, padding, w, h)
+      resolve(undefined)
+    }
+  })
+  const b64 = canvas.toDataURL().replace(/^data:image\/png;base64,/, 'base64://')
+  return b64
+}
+
 async function buildMsg(msg: string, config?: {
   enableTransformTex?: boolean
   enableTransformCode?: boolean
@@ -49,22 +110,7 @@ async function buildMsg(msg: string, config?: {
     if (match) {
       const [_, lang, code] = match
       const svg = await transformCode(code, lang)
-      const canvas = document.createElement('canvas')
-      const viewBoxMatch = svg.match(/viewBox="([^"]+)"/)![1]
-      const [l, u, r, d] = viewBoxMatch.split(' ').map(i => parseFloat(i))
-      canvas.width = r - l
-      canvas.height = d - u
-      // console.log(canvas.width, canvas.height)
-      const context = canvas.getContext('2d')
-      const image = new Image()
-      image.src = `data:image/svg+xml;base64,${window.btoa(svg)}`
-      await new Promise((resolve) => {
-        image.onload = () => {
-          context?.drawImage(image, l, u, r, d)
-          resolve(undefined)
-        }
-      })
-      const b64 = canvas.toDataURL().replace(/^data:image\/png;base64,/, 'base64://')
+      const b64 = await canvasSvgToBase64(svg)
       return createImageMessage(b64)
     }
     return createTextMessage('消息发送失败')
@@ -83,4 +129,7 @@ function transformReply(msg: string) {
 export {
   transformReply,
   buildMsg,
+  canvasSvgToBase64,
+  encodeBase64,
+  decodeBase64,
 }

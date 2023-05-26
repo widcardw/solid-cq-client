@@ -4,6 +4,8 @@
 // To avoid installing the dependencies of playwright
 import { FontStyle } from 'shiki';
 
+const wideCharReg = /[\u4e00-\u9fa5]/g
+
 function measureFont([fontName, fontSize]) {
   const c = document.createElement("canvas");
   const ctx = c.getContext("2d");
@@ -77,6 +79,11 @@ const htmlEscapes = {
   '"': "&quot;",
   "'": "&#39;"
 };
+
+/**
+ * @param {string} html 
+ * @returns {string}
+ */
 function escapeHtml(html) {
   return html.replace(/[&<>"']/g, (chr) => htmlEscapes[chr]);
 }
@@ -97,7 +104,7 @@ async function getSVGRenderer(options) {
       let longestLineTextLength = 0;
       lines.forEach((lTokens) => {
         let lineTextLength = 0;
-        lTokens.forEach((l) => lineTextLength += l.content.length);
+        lTokens.forEach((l) => lineTextLength += l.content.length + (l.content.match(wideCharReg)?.length || 0));
         if (lineTextLength > longestLineTextLength) {
           longestLineTextLength = lineTextLength;
         }
@@ -118,6 +125,7 @@ async function getSVGRenderer(options) {
           svg += `<text font-family="${fontNameStr}" font-size="${fontSize}" y="${lineheight * (index + 1)}">
 `;
           let indent = 0;
+          let chineseCharsCount = 0;
           l.forEach((token) => {
             const tokenAttributes = getTokenSVGAttributes(token);
             if (token.content.startsWith(" ") && token.content.search(/\S/) !== -1) {
@@ -133,7 +141,8 @@ async function getSVGRenderer(options) {
                 token.content
               )}</tspan>`;
             }
-            indent += token.content.length;
+            chineseCharsCount = token.content.match(wideCharReg)?.length || 0
+            indent += token.content.length + chineseCharsCount;
           });
           svg += "\n</text>\n";
         }
