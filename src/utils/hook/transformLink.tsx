@@ -2,7 +2,7 @@ import type { Component } from 'solid-js'
 import { Match, Switch } from 'solid-js'
 import { For } from 'solid-js/web'
 
-const REGEXP = /(https?:\/\/)([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.\-\[\]\/?%~&=@]*)*\/?/g
+const REGEXP = /(https?:\/\/)([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.\-\[\]\/?%~&=@:\*]*)*\/?/g
 
 interface Item {
   type: 'link' | 'text'
