@@ -53,7 +53,7 @@ const toPipeline = (text: string) => {
 const transformLink = (text: string) => {
   const { flag, pipeline } = toPipeline(text)
 
-  if (flag === true)
+  if (flag)
     return buildPipeline({ pipeline })
 
   return text
