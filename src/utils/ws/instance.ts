@@ -13,12 +13,32 @@ import type { CqWs } from './ws'
 
 const [ws, setWs] = createSignal<CqWs>()
 
+function transformSelfSentMsg(data: any) {
+  // Temporarily a solution for correcting the slice problem
+  if (data.post_type === 'message_sent') {
+    const msg = data.message
+    if (Array.isArray(msg)) {
+      if (msg[0].type === 'text')
+        msg[0].data.text = data.raw_message
+    }
+    else {
+      if (msg.type === 'text')
+        msg.data.text = data.raw_message
+    }
+  }
+  return data
+}
+
 function initWs(url: string) {
   setWs(createWs(url))
   setConvLoading(false)
   ws()?.listen((data: any) => {
     if (data.post_type === 'meta_event' || data.post_type === 'request')
       return
+
+    if (data.post_type === 'message_sent')
+      // eslint-disable-next-line no-console
+      console.log(data)
 
     if (data.post_type === 'notice') {
       if (data.notice_type === 'friend_recall')
@@ -97,47 +117,26 @@ function initWs(url: string) {
         return
       }
     }
+
     if (isPrivate(data)) {
       if (data.user_id === data.self_id)
         data.user_id = data.target_id
 
       // Temporarily a solution for correcting the slice problem
-      if (data.post_type === 'message_sent') {
-        const msg = data.message
-        if (Array.isArray(msg)) {
-          if (msg[0].type === 'text')
-            msg[0].data.text = data.raw_message
-        }
-        else {
-          if (msg.type === 'text')
-            msg.data.text = data.raw_message
-        }
-      }
+      data = transformSelfSentMsg(data)
       pushPrivateConversation(data)
       addFriendStore(data)
       return
     }
 
     if (isGroup(data)) {
+      // Temporarily a solution for correcting the slice problem
+      // data = transformSelfSentMsg(data)
       pushGroupConversation(data)
       addGroupStore(data)
       addGroupMemberCard(data)
       return
     }
-
-    // const fs = data.data
-    // if (isGroupRootFsListMessage(fs)) {
-    //   setGroupFsStore(
-    //     fs.files[0].group_id || fs.folders[0].group_id,
-    //     fs,
-    //   )
-    //   return
-    // }
-
-    // if (isSingleFileUrl(fs)) {
-    //   setWarnings(p => [...p, { type: WarningType.Info, msg: '点击下载', extra: fs.url }])
-    //   return
-    // }
 
     // eslint-disable-next-line no-console
     console.log(data)

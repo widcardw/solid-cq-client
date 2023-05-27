@@ -28,7 +28,7 @@ const buildPipeline: Component<{
   )
 }
 
-const transformLink = (text: string) => {
+const toPipeline = (text: string) => {
   let flag = false
   const pipeline: Item[] = []
   let match: RegExpExecArray | null
@@ -47,8 +47,11 @@ const transformLink = (text: string) => {
   if (last)
     pipeline.push({ type: 'text', content: last })
 
-  if (lastIdx < text.length)
-    pipeline.push({ type: 'text', content: text.slice(lastIdx) })
+  return { flag, pipeline }
+}
+
+const transformLink = (text: string) => {
+  const { flag, pipeline } = toPipeline(text)
 
   if (flag === true)
     return buildPipeline({ pipeline })
@@ -58,4 +61,5 @@ const transformLink = (text: string) => {
 
 export {
   transformLink,
+  toPipeline,
 }

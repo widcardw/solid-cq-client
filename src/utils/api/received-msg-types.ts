@@ -26,7 +26,7 @@ interface ReceivedPrivateMessage {
 interface ReceivedGroupMessage {
   time: number
   self_id: number
-  post_type: 'message' | 'request' | 'notice' | 'meta_event'
+  post_type: 'message' | 'request' | 'notice' | 'meta_event' | 'message_sent'
   message_type: 'group'
   sub_type: 'normal' | 'anonymous' | 'notice'
   message_id: number
