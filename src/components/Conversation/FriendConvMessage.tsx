@@ -73,6 +73,7 @@ const FriendConvMessage: Component<{
             </Portal>
           </Show>
         </Show>
+        <div class={clsx('icon')}>{new Date(props.item.time * 1000).toLocaleTimeString()}</div>
       </div>
       {/* 消息本体 */}
       <MessageShown msg={props.item.message} isSelf={props.item.sender.user_id === props.item.self_id} />

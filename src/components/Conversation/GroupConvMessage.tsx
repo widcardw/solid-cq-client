@@ -78,7 +78,7 @@ const GroupConvMessage: Component<{
             </Portal>
           </Show>
         </Show>
-        <div class={clsx('icon')}>{new Date(props.item.time * 1000).toLocaleString()}</div>
+        <div class={clsx('icon')}>{new Date(props.item.time * 1000).toLocaleTimeString()}</div>
       </div>
       <MessageShown msg={props.item.message} isSelf={isSelf} />
     </div>
