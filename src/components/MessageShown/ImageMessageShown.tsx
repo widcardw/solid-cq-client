@@ -3,6 +3,7 @@ import type { Component } from 'solid-js'
 import { Show, createSignal } from 'solid-js'
 import { Portal } from 'solid-js/web'
 import { onClickOutside, useMagicKeys, whenever } from 'solidjs-use'
+import { WarningType, pushRightBottomMessage } from '~/utils/stores/lists'
 
 // type KeyboardDivEvent = KeyboardEvent & {
 //   currentTarget: HTMLDivElement
@@ -21,6 +22,23 @@ const ZoomedImg: Component<{
   onClickOutside(imgRef, () => {
     props.setZoomImg(false)
   })
+
+  let clicked = 0
+
+  const rightClickImageHandler = () => {
+    let msg = ''
+    if (clicked < 1)
+      msg = '看到右上角的下载按钮了吗？点那个下载，不要直接右键保存！'
+    else
+      msg = '不听劝是吧！看看你保存了个什么！'
+    pushRightBottomMessage({
+      msg,
+      ttl: 5000,
+      type: WarningType.Warning,
+    })
+    clicked++
+  }
+
   return (
     <div
       class={clsx(
@@ -31,14 +49,16 @@ const ZoomedImg: Component<{
         'items-center',
         'justify-center',
         'bg-zinc-800/70',
+        'of-y-auto',
       )}
     >
       <img
         ref={r => setImgRef(r)}
         src={props.url}
-        class={clsx('max-w-90%', 'max-h-90%', 'shadow')}
+        class={clsx('max-w-90%', 'shadow')}
         referrerPolicy="no-referrer"
         alt='图片'
+        onContextMenu={rightClickImageHandler}
       />
       <div
         class={clsx(
