@@ -124,26 +124,31 @@ async function getSVGRenderer(options) {
         } else {
           svg += `<text font-family="${fontNameStr}" font-size="${fontSize}" y="${lineheight * (index + 1)}">
 `;
-          let indent = 0;
-          let chineseCharsCount = 0;
-          l.forEach((token) => {
+          // let indent = 0;
+          // let chineseCharsCount = 0;
+          svg += l.map((token) => {
             const tokenAttributes = getTokenSVGAttributes(token);
-            if (token.content.startsWith(" ") && token.content.search(/\S/) !== -1) {
-              const firstNonWhitespaceIndex = token.content.search(/\S/);
-              svg += `<tspan x="${indent * measurement.width}" ${tokenAttributes}>${escapeHtml(
-                token.content.slice(0, firstNonWhitespaceIndex)
-              )}</tspan>`;
-              svg += `<tspan x="${(indent + firstNonWhitespaceIndex) * measurement.width}" ${tokenAttributes}>${escapeHtml(
-                token.content.slice(firstNonWhitespaceIndex)
-              )}</tspan>`;
-            } else {
-              svg += `<tspan x="${indent * measurement.width}" ${tokenAttributes}>${escapeHtml(
-                token.content
-              )}</tspan>`;
-            }
-            chineseCharsCount = token.content.match(wideCharReg)?.length || 0
-            indent += token.content.length + chineseCharsCount;
-          });
+            const style = token.content.startsWith(' ') ? ' style="white-space:pre"' : '';
+            return `<tspan ${tokenAttributes}${style}>${escapeHtml(token.content)}</tspan>`;
+          }).join('');
+          // l.forEach((token) => {
+          //   const tokenAttributes = getTokenSVGAttributes(token);
+          //   if (token.content.startsWith(" ") && token.content.search(/\S/) !== -1) {
+          //     const firstNonWhitespaceIndex = token.content.search(/\S/);
+          //     svg += `<tspan x="${indent * measurement.width}" ${tokenAttributes}>${escapeHtml(
+          //       token.content.slice(0, firstNonWhitespaceIndex)
+          //     )}</tspan>`;
+          //     svg += `<tspan x="${(indent + firstNonWhitespaceIndex) * measurement.width}" ${tokenAttributes}>${escapeHtml(
+          //       token.content.slice(firstNonWhitespaceIndex)
+          //     )}</tspan>`;
+          //   } else {
+          //     svg += `<tspan x="${indent * measurement.width}" ${tokenAttributes}>${escapeHtml(
+          //       token.content
+          //     )}</tspan>`;
+          //   }
+          //   chineseCharsCount = token.content.match(wideCharReg)?.length || 0
+          //   indent += token.content.length + chineseCharsCount;
+          // });
           svg += "\n</text>\n";
         }
       });
