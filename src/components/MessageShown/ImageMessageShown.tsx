@@ -59,7 +59,7 @@ const ZoomedImg: Component<{
       />
       <div
         class={clsx(
-          'absolute',
+          'fixed',
           'p-4',
           'top-4', 'right-4',
           'bg-zinc-800/70',
