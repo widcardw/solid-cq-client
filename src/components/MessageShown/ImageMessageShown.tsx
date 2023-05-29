@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import type { Component } from 'solid-js'
-import { Show, createSignal } from 'solid-js'
+import { Show, createSignal, onMount } from 'solid-js'
 import { Portal } from 'solid-js/web'
 import { onClickOutside, useMagicKeys, whenever } from 'solidjs-use'
 import { WarningType, pushRightBottomMessage } from '~/utils/stores/lists'
@@ -39,20 +39,31 @@ const ZoomedImg: Component<{
     clicked++
   }
 
+  const [vertical, setVertical] = createSignal(false)
+
+  onMount(() => {
+    const img = imgRef()
+    if (img) {
+      if (img.naturalHeight > document.body.clientHeight)
+        setVertical(true)
+    }
+  })
+
   return (
     <div
       class={clsx(
-        'fixed',
+        'absolute',
         'left-0', 'right-0', 'top-0', 'bottom-0',
         'z-99',
         'bg-zinc-800/70',
         'of-y-auto',
+        !vertical() && 'items-center flex justify-center',
       )}
     >
       <img
         ref={r => setImgRef(r)}
         src={props.url}
-        class={clsx('max-w-90%', 'shadow', 'mx-a', 'block')}
+        class={clsx('max-w-90%', 'shadow', vertical() && 'mx-a block')}
         referrerPolicy="no-referrer"
         alt='图片'
         onContextMenu={rightClickImageHandler}
