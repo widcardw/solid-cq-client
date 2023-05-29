@@ -43,11 +43,8 @@ const ZoomedImg: Component<{
     <div
       class={clsx(
         'fixed',
-        'flex',
         'left-0', 'right-0', 'top-0', 'bottom-0',
         'z-99',
-        'items-center',
-        'justify-center',
         'bg-zinc-800/70',
         'of-y-auto',
       )}
@@ -55,7 +52,7 @@ const ZoomedImg: Component<{
       <img
         ref={r => setImgRef(r)}
         src={props.url}
-        class={clsx('max-w-90%', 'shadow')}
+        class={clsx('max-w-90%', 'shadow', 'mx-a', 'block')}
         referrerPolicy="no-referrer"
         alt='图片'
         onContextMenu={rightClickImageHandler}
