@@ -55,4 +55,4 @@
 在初始化以后，启动就是两步
 
 - 在 go-cq 可执行文件路径下执行 `./go-cqhttp -faststart` 启动后端
-- 在该库的 dist 路径下执行 `python -m http.server 3174` 启动 Web 客户端
+- 打开 `https://cq.widcard.win` 连接本地的 WebSocket 进程
