@@ -51,15 +51,17 @@ const Item: Component<{
   })
 
   return (
-    <div onContextMenu={reveal}>
-      <Switch>
-        <Match when={isFriendType(props.i)}>
-          <OneFriend friend={props.i as FriendType} />
-        </Match>
-        <Match when={isGroupType(props.i)}>
-          <OneGroup group={props.i as GroupType} />
-        </Match>
-      </Switch>
+    <>
+      <div onContextMenu={reveal}>
+        <Switch>
+          <Match when={isFriendType(props.i)}>
+            <OneFriend friend={props.i as FriendType} />
+          </Match>
+          <Match when={isGroupType(props.i)}>
+            <OneGroup group={props.i as GroupType} />
+          </Match>
+        </Switch>
+      </div>
       <Show when={isRevealed()}>
         <Portal>
           <div class={clsx('modal-layout shadow space-y-2')}>
@@ -88,7 +90,7 @@ const Item: Component<{
           </div>
         </Portal>
       </Show>
-    </div>
+    </>
   )
 }
 
