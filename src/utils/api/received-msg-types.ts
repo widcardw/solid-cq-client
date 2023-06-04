@@ -120,6 +120,22 @@ function isForwardedMessage2(obj: any): obj is WrappedForwardedMessage {
   return obj && Object.hasOwn(obj, 'echo') && obj.echo === WsGetApi.ForwardMsg
 }
 
+interface JsonMetaData {
+  action: string
+  android_pkg_name: string
+  app_type: number
+  appid: number
+  ctime: number
+  desc: string
+  jumpUrl: string
+  preview: string
+  source_icon: string
+  source_url: string
+  tag: string
+  title: string
+  uin: number
+}
+
 export type {
   ReceivedPrivateMessage,
   ReceivedGroupMessage,
@@ -127,6 +143,7 @@ export type {
   ReceivedGroupRecall,
   ReceivedForwardedOneMessage,
   ReceivedForwardedMessage,
+  JsonMetaData,
 }
 
 export {

@@ -3,3 +3,4 @@ dist
 go-cq/*
 !go-cq/.gitkeep
 .DS_Store
+mock
