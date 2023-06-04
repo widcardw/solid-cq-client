@@ -136,6 +136,24 @@ interface JsonMetaData {
   uin: number
 }
 
+interface MiniAppData {
+  appid: string
+  appType: number
+  /** app 名称 */
+  title: string
+  /** 小程序标题 */
+  desc: string
+  /** app 图标 */
+  icon: string
+  /** 小程序内部链接 */
+  url: string
+  scene: number
+  /** 外部链接 */
+  qqdocurl: string
+  /** 小程序内容的预览图 */
+  preview: string
+}
+
 export type {
   ReceivedPrivateMessage,
   ReceivedGroupMessage,
@@ -144,6 +162,7 @@ export type {
   ReceivedForwardedOneMessage,
   ReceivedForwardedMessage,
   JsonMetaData,
+  MiniAppData,
 }
 
 export {
